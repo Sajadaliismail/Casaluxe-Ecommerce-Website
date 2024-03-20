@@ -1,0 +1,50 @@
+<%- include('header.ejs') %>
+
+
+    <!-- Page Banner Section Start -->
+    <div class="section page-banner-section" style="background-image: url(/imgs/images/page-banner.jpg); height: 65%;">
+        <div class="container">
+            <!-- Page Banner Content End -->
+            <div class="page-banner-content">
+                <h2 class="title">Cart</h2>
+
+                <ul class="breadcrumb">
+                    <li><a href="/">Home</a></li>
+                    <li class="active">Cart</li>
+                </ul>
+            </div>
+            <!-- Page Banner Content End -->
+        </div>
+    </div>
+    <!-- Page Banner Section End -->
+
+    
+   
+    <!-- Shopping Cart Section Start -->
+
+        <div class="section section-padding">
+            <div class="container">
+                <div class="cart-wrapper">
+                    <!-- empty cart Start -->
+                    <div class="empty-cart text-center">
+                        <h2 class="empty-cart-title">
+                            Order placed successfully!
+                        </h2>
+                        <div class="empty-cart-img">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z"/></svg>
+                        </div>
+                        <p>Your order has been placed successfully. Thank you for shopping with us!</p>
+                        <p>Order Id : <%= orderId %></p>
+                        <a href="/shop" class="btn btn-primary btn-hover-dark"><i class="fa fa-angle-left"></i> Continue
+                            browsing</a>
+                        
+                    </div>
+                    <!-- empty cart End -->
+                </div>
+            </div>
+        </div>
+     
+      
+    <!-- Shopping Cart Section End -->
+
+    <%- include('footer.ejs') %>

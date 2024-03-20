@@ -1,0 +1,313 @@
+<%- include('header.ejs') %>
+
+    <!-- Slider Section Start -->
+    <div class="section slider-section">
+        <div class="slider-shape"></div>
+
+        <div class="container">
+            <div class="slider-active">
+                <div class="swiper-container">
+                    <div class="swiper-wrapper">
+
+                        <!-- Single Slider Start  -->
+                        <div class="single-slider swiper-slide animation-style-01">
+                            <!-- Slider Content Start -->
+                            <div class="slider-content">
+                                <h2 class="title">
+                                    New Stylish <br />
+                                        Decore Furnitures
+                                </h2>
+                                <p>
+                                    Unique Furniture Style Design for Your
+                                    Family
+                                </p>
+                                <a href="/shop" class="btn btn-primary btn-hover-dark btn-margin">Shop now</a>
+                            </div>
+                            <!-- Slider Content End -->
+
+                            <!-- Slider images Start -->
+                            <div class="slider-images">
+                                <img src="/imgs/images/slider/slider-item-2.png" width="707" height="477" alt="Slider" />
+                            </div>
+                            <!-- Slider images End -->
+                        </div>
+                        <!-- Single Slider End  -->
+
+                    </div>
+              
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Slider Section End -->
+
+    <!-- Banner Section Start -->
+    <!-- <div class="section section-padding-02">
+        <div class="container">
+           
+            <div class="banner-wrapper">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="single-banner">
+                            <img src="/imgs/images/banner/banner-01.jpg" width="370" height="245" alt="Banner" />
+
+                            <div class="banner-content">
+                                <h3 class="title">
+                                    <a href="shop-grid-4-column.html">New Ruben Teak <br />
+                                            Sideboard</a>
+                                </h3>
+                                <span class="discount">30% Off</span>
+                                <a class="btn btn-primary btn-hover-dark" href="shop-grid-4-column.html">Shop Now</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="single-banner">
+                            <img src="/imgs/images/banner/banner-02.jpg" width="370" height="245" alt="Banner" />
+
+                            <div class="banner-content content-02">
+                                <h3 class="title">
+                                    <a href="shop-grid-4-column.html">New Reversible <br />
+                                            Sofa</a>
+                                </h3>
+                                <span class="discount">30% Off</span>
+                                <a class="btn btn-primary btn-hover-dark" href="shop-grid-4-column.html">Shop Now</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="single-banner">
+                            <img src="/imgs/images/banner/banner-03.jpg" width="370" height="245" alt="Banner" />
+
+                            <div class="banner-content">
+                                <h3 class="title">
+                                    <a href="shop-grid-4-column.html">New Lamp Light <br />
+                                            Collection</a>
+                                </h3>
+                                <span class="discount">30% Off</span>
+                                <a class="btn btn-primary btn-hover-dark" href="shop-grid-4-column.html">Shop Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <!-- Banner Section End -->
+    
+    <!-- New Product Section Start -->
+    <div class="section section-padding">
+        <div class="shop-sort">
+               <h2 class="text-center mb-5">Shop by category </h2>
+            <ul class="list-unstyled list-group list-group-horizontal gap-3  justify-content-around">
+     
+                <% for( let index = 0; index < categories.length; index++ ) { %> <li class=""><a class="font-weight-bold text-primary text-hover-success mb-0" href="/category/<%= categories[index]._id %>"><h4 class="mb-3 fw-light" data-animate="fadeInUp"><%= categories[index].name %></h4></a></li>
+                <% } %> </ul></nav></div>
+               
+         </ul>        
+                </div>
+        <div class="container">
+            <!-- Product Section Wrapper Start -->
+            <div class="product-section-wrapper">
+                <div class="row justify-content-center">
+                    <div class="col-lg-3 col-md-6">
+                        <!-- Single Banner Start -->
+                        <div class="single-banner-02">
+                            <img src="/imgs/images/banner/banner-04.jpg" width="270" height="429" alt="Banner" />
+
+                            <div class="banner-content">
+                                <h3 class="title">
+                                    <a href="/shop">All New Furniture</a>
+                                </h3>
+                                <span class="discount">40% Off</span>
+                                <a class="btn btn-primary btn-hover-dark" href="/shop">Shop Now</a>
+                            </div>
+                        </div>
+                        <!-- Single Banner End -->
+                    </div>
+                    <div class="col-lg-9">
+                        <!-- Product Wrapper Start -->
+                        <div class="product-wrapper product-active">
+                            <!-- Product Top Wrapper Start -->
+                            <div class="product-top-wrapper">
+                                <!-- Section Title Start -->
+                                <div class="section-title order-md-1">
+                                    <h2 class="title"># New Products</h2>
+                                </div>
+                                <!-- Section Title End -->
+
+                            
+                                
+                            </div>
+                            <!-- Product Top Wrapper End -->
+
+                            <!-- Product Tabs Content Start -->
+                            <div class="product-tabs-content">
+                                <div class="tab-content">
+                                    <div class="tab-pane fade show active" id="tab1">
+                                        <div class="swiper-container">
+                                            <div class="swiper-wrapper">
+                                                <% const currentDate = new Date(); %>
+<% const tenDaysAgo = new Date(currentDate); %>
+<% tenDaysAgo.setDate(currentDate.getDate() - 5); %>
+
+                                                <% for( let index = productdata.length-1; index >= productdata.length-4; index-- ) { %>  
+
+                                                <div class="swiper-slide">
+                                                    <!-- Single Product Start -->
+                                                        <div class="single-product">
+                                                            <% if (productdata[index].stock<10) { %>
+                                                                <span  class="stock-tag">Only <%= productdata[index].stock %> left !!</span>
+                                                            <% } %>
+                                                            <% const productDate = new Date(productdata[index].date); %>
+                                                            <% if (productDate >= tenDaysAgo) { %>
+                                                                <span  class="day-tag">New</span>
+                                                            <% } %>
+                                                            <% if (productdata[index].stock==0) { %>
+                                                                <span  class="stock-tag">No stock !!</span>
+                                                            <% } %>
+                                                            <a href="/product/<%= productdata[index].id %>"><img src="/imgs/uploads/<%= productdata[index].image[0]%>" width="270" height="303" alt="product" /></a>
+                                                            <div class="product-content">
+                                                                <h4 class="title">
+                                                                    <a href="/product/<%= productdata[index].id %>"><%= productdata[index].name %></a>
+                                                                </h4>
+                                                                <div class="text-danger " style="font-size: x-small;" id="errornumber"></div>
+                                                                    <input min="1" hidden  class="form-control" id="count<%= productdata[index]._id %>" type="number" value="1" />
+                                                                <div class="price">
+                                                                    <span
+                                                                            class="sale-price"
+                                                                            ><%= productdata[index].price.toFixed(2) %></span>
+                                                                </div>
+                                                            </div>
+                                                            <ul class="product-meta">
+                                                        
+                                                                <li>
+                                                                    <a  onclick="addtocart('<%= productdata[index]._id %>')" class="action" title="Add to cart"><i
+                                                                        class="pe-7s-shopbag"
+                                                                    ></i></a>
+                                                                </li>
+                                                                <li>
+                                                                    <a  onclick="addtowishlist('<%= productdata[index]._id %>')" class="action" title="Add to wishlist"><i
+                                                                        class="pe-7s-like"
+                                                                    ></i></a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    <!-- Single Product End -->
+                                                </div>
+                                                <% } %>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                </div>
+                            </div>
+                            <!-- Product Tabs Content End -->
+                        </div>
+                        <!-- Product Wrapper End -->
+                    </div>
+                </div>
+            </div>
+            <!-- Product Section Wrapper End -->
+        </div>
+    </div>
+    <!-- New Product Section End -->
+
+     <!-- Product Banner Section Start -->
+     <div class="section">
+        <div class="products-banner products-banner-active">
+            <div class="swiper-container">
+                <div class="shop-sort">
+                    <h2 class="text-center mb-5">Shop by roomtype </h2>
+                 <ul class="list-unstyled list-group list-group-horizontal gap-3  justify-content-around">
+          
+                     <% for( let index = 0; index < roomtype.length; index++ ) { %> <li class=""><a class="font-weight-bold text-primary text-hover-success mb-0" href="/roomtype/<%= roomtype[index]._id %>"><h4 class="mb-3 fw-light" data-animate="fadeInUp"><%= roomtype[index].name %></h4></a></li>
+                     <% } %> </ul></nav></div>
+                    
+              </ul>        
+                     </div>
+            </div>
+        </div>
+    </div>
+    <!-- Product Banner Section End -->
+
+    <!-- Sale Product Section Start -->
+    <div class="section section-padding bg-color-01">
+        <div class="container">
+            
+            <div class="product-active-02">
+                
+                <div class="product-tabs-content">
+                    <div class="tab-content">
+                      
+                        <div class="tab-pane fade show active" id="tab8">
+                            <div class="swiper-container">
+                                <div class="swiper-wrapper">
+                                    
+                                    <% for( let index = 0; index < 4; index++ ) { %>  
+
+                                    <div class="swiper-slide">
+                                        <!-- Single Product Start -->
+
+                                        <div class="single-product">
+                                            <a href="#"> 
+                                            <% if (productdata[index].stock<5) { %>
+                                                <span  class="stock-tag">Only <%= productdata[index].stock %> left !!</span>
+                                            <% } %>
+                                            <% const productDate = new Date(productdata[index].date); %>
+                                            <% if (productDate >= tenDaysAgo) { %>
+                                                <span  class="day-tag">New</span>
+                                            <% } %>
+                                            <% if (productdata[index].stock==0) { %>
+                                                <span  class="stock-tag">No stock !!</span>
+                                            <% } %>
+                                            
+                                                
+                                                <img src="/imgs/uploads/<%= productdata[index].image[0]%>" width="270" height="303" alt="product" /></a>
+                                            <div class="product-content">
+                                                <h4 class="title">
+                                                    <a href="/product/<%= productdata[index].id %>"><%= productdata[index].name %></a>
+                                                </h4>
+                                                <div class="price">
+                                                    <span class="sale-price"
+                                                            ><%= productdata[index].price.toFixed(2) %></span>
+                                                </div>
+                                            </div>
+                                       
+                                            <input min="1" hidden  class="form-control" id="count<%= productdata[index]._id %>" type="number" value="1" />
+                                       
+                                            <ul class="product-meta">
+                                               
+                                                <li>
+                                                    <a  onclick="addtocart('<%= productdata[index]._id %>')" class="action" title="Add to cart"><i
+                                                        class="pe-7s-shopbag"
+                                                    ></i></a>
+                                                </li>
+                                                <li>
+                                                    <a  onclick="addtowishlist('<%= productdata[index]._id %>')" class="action" title="Add to wishlist"><i
+                                                                class="pe-7s-like"
+                                                            ></i></a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <!-- Single Product End -->
+                                    </div>
+                                    <% } %>
+
+                                   
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Product Tabs Content End -->
+            </div>
+            <!-- Product Wrapper End -->
+        </div>
+    </div>
+    <!-- Sale Product Section End -->
+
+    <%- include('footer.ejs') %>

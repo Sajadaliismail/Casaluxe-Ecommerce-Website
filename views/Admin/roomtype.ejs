@@ -1,0 +1,117 @@
+<%- include('header.ejs') %>
+
+<main class="main-wrap">
+  <header class="main-header navbar">
+  </header>
+  <section class="content-main">
+    <div class="content-header">
+      <div>
+        <h2 class="content-title card-title">Room types</h2>
+        <p>Add, edit or delete a roomtype</p>
+      </div>
+      
+    </div>
+    <div class="card" id="space">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-3">
+            <form method="" action="" id="newroomtype">
+              <div class="mb-4">
+                <label for="product_name" class="form-label">Name</label>
+                <input type="hidden" name="id" value="<%= locals._id %>" />
+                <input
+                  type="text"
+                  placeholder="Type here" pattern="[^\s]+" title="Please enter a value other than space."
+                  value="<%= locals.name %>"
+                  class="form-control"
+                  id="name"
+                />
+              </div>
+              <div class="mb-4">
+                <label for="product_slug" class="form-label">Url</label>
+                <input
+                  type="text" pattern="[^\s]+" title="Please enter a value other than space."
+                  placeholder="Type here"
+                  value="<%= locals.url %>"
+                  class="form-control"
+                  id="url"
+                />
+              </div>
+              <div class="mb-4">
+                <label class="form-label">Description</label>
+                <textarea
+                  id="description" pattern="[^\s]+" title="Please enter a value other than space."
+                  placeholder="Type here"
+                  value="<%= locals.description %>"
+                  class="form-control"
+                ></textarea>
+              </div>
+              <div class="d-grid">
+                <button
+                  class="btn btn-primary"
+                  id="submitButtonroom"
+                  type="button"
+                  onclick=""
+                >
+                  Create roomtype
+                </button>
+              </div>
+            </form>
+            <div class="text-center" id="result"><%= locals.message %></div>
+          </div>
+          <div class="col-md-9">
+            <div class="table-responsive">
+              <table id="myTable" class="table table-hover">
+                <thead>
+                  <tr>
+                  
+                    <th>No</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>url</th>
+                    <th>Status</th>
+                    <th class="text-end">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for(let i = 0 ; i < roomtype.length ; i++ ) { %>
+                  <tr>
+                  
+                    <td><%= i + 1 %></td>
+                    <td><%= roomtype[i].name %></td>
+                    <td><%= roomtype[i].description %></td>
+                    <td><%= roomtype[i].url %></td>
+                    <td><% if (roomtype[i].isActive) { %>
+                      Active
+                  <% } else { %>
+                      Inactive
+                  <% } %></a></td>
+                    <td class="d-flex flex-row text-center">
+                      <a class="dropdown-item w-50 p-0"  href="/admin/api/roomtype?id=<%= roomtype[i]._id%>">Edit</a>
+                      <a class="dropdown-item w-50 p-0 text-danger delete" href="" data-id="<%= roomtype[i]._id%>"><% if (roomtype[i].isActive) { %>
+                        Unlist
+                    <% } else { %>
+                        Unblock
+                    <% } %></a></a>
+               
+          </td>
+                    
+                    
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- .col// -->
+        </div>
+        <!-- .row // -->
+      </div>
+      <!-- card body .// -->
+    </div>
+    <!-- card .// -->
+  </section>
+  <!-- content-main end// -->
+  
+  <%- include('footer.ejs') %>
+

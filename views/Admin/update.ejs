@@ -1,0 +1,45 @@
+<%- include('header.ejs') %>
+
+
+    <main class="main-wrap">
+        <header class="main-header navbar"></header>
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Edit Category</h2>
+        <h6 class="text-danger"><%= locals.error %></h6>   
+                </div>
+                
+            </div>
+            <div class="card" id="space">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form method="post" action="/admin/api/updatecategory" id="">
+                                <div class="mb-4">
+                                    <label for="product_name" class="form-label">Name</label>
+                                    <input type="hidden"  name="objectid" value="<%= data._id %>">
+                                    <input type="text" name="name" placeholder="Type here" value="<%= data.name %>" class="form-control" id="name" />
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Description</label>
+                                    <input id="url" name="url" placeholder="Type here" value="<%= data.url %>" class="form-control">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Description</label>
+                                    <textarea id="description" name="description" placeholder="Type here" value="" class="form-control"><%= data.description %></textarea>
+                                </div>
+                                <div class="d-grid">
+                                    <button class="btn btn-primary" id="" type="submit" onclick="">Update category</button>
+                                </div>
+                            </form>
+                            <div class="text-center " id="result"><%= locals.message %></div>
+                        </div>
+                        
+                        <!-- .col// -->
+                    </div> <!-- .row // -->
+                </div> <!-- card body .// -->
+            </div> <!-- card .// -->
+        </section> <!-- content-main end// -->
+        
+        <%- include('footer.ejs') %>

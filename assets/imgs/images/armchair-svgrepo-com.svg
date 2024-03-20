@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+	 viewBox="0 0 52.03 52.03" xml:space="preserve">
+<line style="fill:none;stroke:#C7CAC7;stroke-width:2;stroke-linecap:round;stroke-miterlimit:10;" x1="48" y1="48.015" x2="48" y2="51.015"/>
+<line style="fill:none;stroke:#C7CAC7;stroke-width:2;stroke-linecap:round;stroke-miterlimit:10;" x1="47" y1="51.015" x2="49" y2="51.015"/>
+<line style="fill:none;stroke:#C7CAC7;stroke-width:2;stroke-linecap:round;stroke-miterlimit:10;" x1="4" y1="48.015" x2="4" y2="51.015"/>
+<line style="fill:none;stroke:#C7CAC7;stroke-width:2;stroke-linecap:round;stroke-miterlimit:10;" x1="3" y1="51.015" x2="5" y2="51.015"/>
+<path style="fill:#1BB4BF;" d="M52,33.015v-13.08c0-0.508-0.412-0.92-0.92-0.92h-8.16c-0.508,0-0.92,0.412-0.92,0.92v13.08H10
+	v-13.08c0-0.508-0.412-0.92-0.92-0.92H0.92c-0.508,0-0.92,0.412-0.92,0.92v13.08v10h10h32h10h0.03v-10H52z"/>
+<path style="fill:#19C8E0;" d="M10,19.935v13.08h32v-13.08c0-0.508,0.412-0.92,0.92-0.92H46V1.638c0-0.897-0.727-1.623-1.623-1.623
+	H7.623C6.727,0.015,6,0.742,6,1.638v17.377h3.08C9.588,19.015,10,19.427,10,19.935z"/>
+<rect x="10" y="24.015" style="fill:#118793;" width="32" height="9"/>
+<rect x="46" y="43.015" style="fill:#839594;" width="4" height="5"/>
+<rect x="2" y="43.015" style="fill:#839594;" width="4" height="5"/>
+<g>
+	<circle style="fill:#57F7E4;" cx="23" cy="6.015" r="1"/>
+	<circle style="fill:#57F7E4;" cx="29" cy="6.015" r="1"/>
+	<circle style="fill:#57F7E4;" cx="14" cy="9.015" r="1"/>
+	<circle style="fill:#57F7E4;" cx="14" cy="15.015" r="1"/>
+	<circle style="fill:#57F7E4;" cx="17" cy="12.015" r="1"/>
+	<circle style="fill:#57F7E4;" cx="20" cy="9.015" r="1"/>
+	<circle style="fill:#57F7E4;" cx="26" cy="9.015" r="1"/>
+	<circle style="fill:#57F7E4;" cx="20" cy="15.015" r="1"/>
+	<circle style="fill:#57F7E4;" cx="26" cy="15.015" r="1"/>
+	<circle style="fill:#57F7E4;" cx="23" cy="12.015" r="1"/>
+	<circle style="fill:#57F7E4;" cx="29" cy="12.015" r="1"/>
+	<circle style="fill:#57F7E4;" cx="23" cy="18.015" r="1"/>
+	<circle style="fill:#57F7E4;" cx="29" cy="18.015" r="1"/>
+	<circle style="fill:#57F7E4;" cx="32" cy="9.015" r="1"/>
+	<circle style="fill:#57F7E4;" cx="38" cy="9.015" r="1"/>
+	<circle style="fill:#57F7E4;" cx="32" cy="15.015" r="1"/>
+	<circle style="fill:#57F7E4;" cx="38" cy="15.015" r="1"/>
+	<circle style="fill:#57F7E4;" cx="35" cy="12.015" r="1"/>
+</g>
+</svg>

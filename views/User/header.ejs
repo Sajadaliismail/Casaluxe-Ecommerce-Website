@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Casaluxe</title>
+    <meta name="robots" content="noindex, follow" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/svg+xml" href="/imgs/images/armchair-svgrepo-com.svg" />
+
+    <!-- CSS
+	============================================ -->
+
+    <!-- Icon Font CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/plugins/pe-icon-7-stroke.css" />
+    <link rel="stylesheet" href="/css/plugins/font-awesome.min.css" />
+
+    <!-- Plugins CSS -->
+    <link rel="stylesheet" href="/css/plugins/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/plugins/animate.min.css" />
+    <link rel="stylesheet" href="/css/plugins/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="/css/plugins/odometer.min.css" />
+    <link rel="stylesheet" href="/css/plugins/select2.min.css" />
+    <link rel="stylesheet" href="/css/plugins/ion.rangeSlider.min.css" />
+    
+
+    <!-- Main Style CSS -->
+    <!-- <link rel="stylesheet" href="/css/style.css"> -->
+    <link rel="stylesheet" href="/css/style.min.css" />
+</head>
+
+
+<body>
+    <!-- Header Start  -->
+    <div class="header-area header-sticky d-none d-lg-block">
+        <div class="container position-relative">
+            <div class="row align-items-center">
+                <div class="col-lg-3">
+                    <!-- Header Logo Start -->
+                    <div class="header-logo">
+                        <a href="/"><img src="/imgs/images/logo.png" width="154" height="46" alt="Logo" /></a>
+                    </div>
+                    <!-- Header Logo End -->
+                </div>
+                <div class="col-lg-6">
+                    <div class="header-menu">
+                      
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <!-- Header Meta Start -->
+                    <div class="header-meta">
+                        <div class="dropdown">
+                            <a class="action" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="pe-7s-search"></i>
+                            </a>
+
+                            <div class="dropdown-menu dropdown-search">
+                                <!-- Header Search Start -->
+                                <div class="header-search">
+                                    <form action="#">
+                                        <input id="searchInput" oninput="search(this.value)" type="text" placeholder="Enter your search key ... " />
+                                        <button>
+                                            <i class="pe-7s-search"></i>
+                                        </button>
+                                        <ul class="list-group" id="SearchResults">
+                                        </ul>
+                                    </form>
+                                </div>
+                                <!-- Header Search End -->
+                            </div>
+                        </div>
+
+                        <div class="dropdown">
+                            <a class="action" href="#" role="button" data-bs-toggle="dropdown"><i class="pe-7s-user"></i></a>
+
+                            <ul class="dropdown-menu dropdown-profile">
+                                <li><a href="/myaccount">My Account</a></li>
+                                <li><a href="/cart">My cart</a></li>
+                                <li><a href="/logout">Logout</a></li>
+                            </ul>
+                        </div>
+                        <a class="action" href="/wishlist"><i class="pe-7s-like"></i></a>
+
+                        <div class="dropdown">
+                            <a onclick="getcartdata()" id="getcartbutton" id="carticon" class="action" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="pe-7s-shopbag"></i>
+                               
+                                <span id="cartItemNumber"  class="number"><%= cart.products.length %></span>
+                            </a>
+
+                            <div class="dropdown-menu dropdown-cart rounded">
+                                <div class="cart-content rounded" id="cart-content">
+                                    <ul id="cartIconUl">
+
+                                    </ul>
+                                </div>
+                                <div id="noItemsDiv" class="align-content-center text-center">
+                                    <div class="empty-cart-title">
+                                        There are no more items in your cart
+                                    </div>
+                                    <div class="efmpty-cart-img">
+                                        <img height="20px" width="20px" src="/imgs/images/cart.png" alt="Cart" />
+                                    </div>
+                                    <p>Your cart is currently empty!</p>
+                                    <a href="/shop" class=" btn-success p-2"><i class="fa fa-angle-left"></i> Continue
+                                        browsing</a>
+                                </div>
+
+                                <div id="cartPriceDiv" style="display: none;" class="cart-price">
+                                    <div class="cart-subtotals">
+                                        <div class="price-inline">
+                                            <span class="label">Subtotal</span>
+                                            <span id="subtotal" class="value"></span>
+                                        </div>
+                                        <div class="price-inline">
+                                            <span class="label">Discount</span>
+                                            <span id="discountsTotal" class="value"></span>
+                                        </div>
+                                    </div>
+                                    <div id="cartTotal">
+                                        <div class="price-inline">
+                                            <span class="label">Total</span>
+                                            <span id="totalprice" class="value"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="checkoutButton" style="display: none;" class="checkout-btn">
+                                    <a href="/cart" class="btn btn-dark btn-hover-primary d-block">Go to cart</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Header Meta End -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+    
+    <div id="notification" class="notification"> 
+     </div>
+    <!-- Header Mobile Start -->
+    <div class="header-mobile section d-lg-none">
+        <!-- Header Mobile top Start -->
+        <div class="header-mobile-top header-sticky">
+            <div class="container">
+                <div class="row row-cols-3 gx-2 align-items-center">
+                    <div class="col">
+                        <!-- Header Toggle Start -->
+                        <div class="header-toggle">
+                            <button class="mobile-menu-open" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                        <!-- Header Toggle End -->
+                    </div>
+                    <div class="col">
+                        <!-- Header Logo Start -->
+                        <div class="header-logo text-center">
+                            <a href="/"><img src="/imgs/images/logo.png" width="154" height="46" alt="Logo" /></a>
+                        </div>
+                        <!-- Header Logo End -->
+                    </div>
+                    <div class="col">
+                        <!-- Header Action Start -->
+                        <div class="header-meta">
+                            <div class="dropdown">
+                                <a class="action" href="#" role="button" data-bs-toggle="dropdown"><i class="pe-7s-user"></i></a>
+
+                                <ul class="dropdown-menu dropdown-profile">
+                                    <li>
+                                        <a href="/myaccount">My Account</a>
+                                    </li>
+                                    <li><a href="/cart">Go to cart</a></li>
+                                    <li><a href="/logout">Logout</a></li>
+                                </ul>
+                            </div>
+                            <a class="action" href="/cart">
+                                <i class="pe-7s-shopbag"></i>
+                                <span class="number">3</span>
+                            </a>
+                        </div>
+                        <!-- Header Action End -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Header Mobile top End -->
+
+        <!-- Header Mobile Bottom End -->
+        <div class="header-mobile-bottom">
+            <div class="container">
+                <!-- Header Search Start -->
+                <div class="header-search">
+                    <form action="#">
+                        <input type="text" placeholder="Enter your search key ... " />
+                        <button><i class="pe-7s-search"></i></button>
+                    </form>
+                </div>
+                <!-- Header Search End -->
+            </div>
+        </div>
+        <!-- Header Mobile Bottom End -->
+    </div>
+    <!-- Header Mobile End -->
+
+    <!-- off Canvas Start -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasMenu">
+        <div class="offcanvas-header">
+            <!-- Canvas Action Start -->    
+            <div class="canvas-action">
+                <a class="action" href="/cart"><i class="icon-sliders"></i> Cart
+                    <span class="action-num">(3)</span></a>
+                <a class="action" href="/wishlist"><i class="icon-heart"></i> Wishlist
+                    <span class="action-num">(3)</span></a>
+            </div>
+            <!-- Canvas Action end -->
+
+            <!-- Canvas Close bar Start -->
+            <div class="canvas-close-bar">
+                <span>Menu</span>
+                <button class="menu-close" data-bs-dismiss="offcanvas">
+                    <i class="pe-7s-angle-left"></i>
+                </button>
+            </div>
+            <!-- Canvas Close bar End -->
+        </div>
+
+        <div class="offcanvas-body">
+            <!-- Canvas Menu Start -->
+            <div class="canvas-menu">
+                <nav>
+                    
+                </nav>
+            </div>
+            <!-- Canvas Menu End -->
+        </div>
+    </div>
+    <!-- off Canvas End -->

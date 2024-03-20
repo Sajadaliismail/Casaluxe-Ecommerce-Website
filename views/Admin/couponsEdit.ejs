@@ -1,0 +1,120 @@
+<%- include('header.ejs') %>
+
+<main class="main-wrap">
+  <header class="main-header navbar"></header>
+  <section class="content-main">
+    <div class="content-header">
+      <h2 class="content-title">Coupon Management</h2>
+    </div>
+    <div class="card" id="space">
+      <div class="card-body">
+        <div class="row">
+
+    <div class="col-md-12">
+    <div class="card mb-4">
+     
+      <header class="card-header">
+        <h4>Create Coupon</h4>
+      </header>
+    </div>
+    <form id="couponUpdateForm" action="" method="">
+      <input type="text" id="coupnId" name="id" value="<%= coupon._id %>" hidden>
+      <div class="form-inline">
+      <div class="form-groups col-md-4 mb-3 ">
+          <label for="name">Name:</label>
+          <input type="text" class="form-control" value="<%= coupon.name %>" id="name" name="name" required>
+      </div>
+      <div class="form-groups col-md-4 mb-3">
+        <label for="code">Code:</label>
+        <input type="text" class="form-control" value="<%= coupon.code %>" id="code" name="code" required>
+  </div>
+  <div class="form-groups col-md-3 mb-3">
+          <button class="btn btn-outline-secondary"  type="button" id="generateCodeBtn">Generate Random Code</button>
+    
+    </div>
+      <div class="form-group mb-3">
+          <label for="description">Description:</label>
+          <textarea class="form-control" id="description" name="description"><%= coupon.description %></textarea>
+      </div>
+  
+     
+  
+      <div class="form-groups mb-3">
+          <label for="discount">Discount:</label>
+          <input type="number" class="form-control" id="discount" value="<%= coupon.discount %>" name="discount" required>
+      </div>
+  
+      <div class="form-groups mb-3">
+          <label for="minAmount">Minimum Amount:</label>
+          <input type="number" class="form-control" value="<%= coupon.minAmount %>" id="minAmount" name="minAmount" required>
+      </div>
+  
+      <div class="form-groups mb-3">
+          <label for="maxDiscount">Maximum Discount:</label>
+          <input type="number" class="form-control" value="<%= coupon.maxDiscount %>" id="maxDiscount" name="maxDiscount">
+      </div>
+  
+      <div class="form-groups col-md-3 mb-3">
+          <label for="startDate">Start Date:</label>
+          <input type="date" class="form-control" value="<%= coupon.startDate.toISOString().split('T')[0] %>" id="startDate" name="startDate" required>
+      </div>
+  
+      <div class="form-groups col-md-3 mb-3">
+          <label for="endDate">End Date:</label>
+          <input type="date" class="form-control" value="<%= coupon.endDate.toISOString().split('T')[0] %>" id="endDate" name="endDate" required>
+      </div>
+  
+      <div class="form-groups mb-3">
+          <label for="usageLimit">Usage Limit:</label>
+          <input type="number" class="form-control" value="<%= coupon.usageLimit %>" id="usageLimit" name="usageLimit">
+      </div>
+      <input type="text" id="productValue" hidden value="<%= coupon.products %>" >
+      <input id="categoriesValue" type="text" hidden value="<%= coupon.categories %>" >
+
+    <div class="form-groups col-md-3 mb-3">
+      <label for="couponType">Coupon Type:</label>
+      <select class="form-control" id="couponType" name="couponType">
+          <option value="products">Products</option>
+          <option value="categories">Categories</option>
+      </select>
+  </div>
+  
+  <div class="form-groups col-md-3 mb-3"  id="productsSection">
+      <label for="products">Select Products:</label>
+      <select class="form-control" id="products" name="products">
+          <option value="none">None</option>  
+          <% product.forEach(product => { %>
+              <option value="<%= product._id %>"><%= product.name %></option>
+          <% }); %>
+      </select>
+  </div>
+  
+  <div class="form-groups col-md-3 mb-3" id="categoriesSection" style="display: none;">
+      <label for="categories">Categories:</label>
+      <select class="form-control" id="categories" name="categories">
+          <option value="none">None</option>
+          <% category.forEach(category => { %>
+              <option value="<%= category._id %>"><%= category.name %></option>
+          <% }); %>
+      </select>
+  </div>
+  
+      
+      <div class="form-group mb-3">
+      <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </div>  
+    </form>
+  
+  </div>
+ 
+</div>
+</div>
+    <!-- card end// -->
+  </section>
+  <footer class="main-footer font-xs">
+    <div class="row pb-30 pt-15">
+    </div>
+  </footer>
+  <%- include('footer.ejs') %>
+</main>

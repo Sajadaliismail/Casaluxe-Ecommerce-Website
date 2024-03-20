@@ -1,0 +1,467 @@
+<%- include('header.ejs') %>
+
+
+    <!-- Page Banner Section Start -->
+    <div class="section page-banner-section" style="background-image: url(/imgs/images/page-banner.jpg); height: 65%;">
+
+        <div class="container">
+            <!-- Page Banner Content End -->
+            <div class="page-banner-content">
+                <h2 class="title">Checkout</h2>
+
+                <ul class="breadcrumb">
+                    <li><a href="/">Home</a></li>
+                    <li class="active">Checkout</li>
+                </ul>
+            </div>
+            <!-- Page Banner Content End -->
+        </div>
+    </div>
+    <!-- Page Banner Section End -->
+
+    <!-- Checkout Section Start -->
+    <div class="section section-padding">
+        <div class="container">
+            <div class="checkout-info">
+                <p class="info-header">
+                    <i class="fa fa-exclamation-circle"></i> 
+                    <a data-bs-toggle="collapse" href="#coupon">Apply Coupon</a>
+                </p>
+
+                <div class="collapse" id="coupon">
+                    <div class="card-body">
+                       
+                            <!-- <div class="row">
+                                <div class="col-lg-12"> -->
+                                    <div class="single-form d-flex flex-col gap-3">
+                                       <% coupons.forEach((coupon,index) => { %>
+                                        <div class="col-lg-4">
+                                            <div class="coupon" id="couponContainer">
+                                                
+                                                <h3><%= coupon.code %></h3>
+                                                <h5><%= coupon.name %></h5>
+                                                <p>Discount: <%= coupon.discount %>%</p>
+                                                <p>Expires: <%= coupon.endDate.toLocaleString() %></p>
+                                          
+                                                    <button type="button" class="copy-btn" id="applyBtn<%= index %>" onclick="useCode('<%= coupon._id %>','<%= index %>')">Apply Coupon</button>
+                                                    <button type="button" class="remove-btn" hidden id="removeBtn<%= index %>"  onclick="removeCoupon('<%= coupon._id %>','<%= index %>')">Remove </button>
+                                                
+                                            </div>
+                                        </div>
+                                        
+                                       <% }) %>
+                                    <!-- </div>
+                                </div>
+                            -->
+                            </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <% if (locals.error) { %>
+                <div class="errorone" ><%= error %></div>
+            <% } %>
+            <form id="placeOrder">
+                <input type="text" id="order_id" name="order_id" hidden value="<%= order._id %>">
+                <div class="row">
+                    <div class="col-lg-7">
+                        <!-- Checkout Form Start -->
+                        <div class="checkout-form">
+                            <div class="checkout-title">
+                                <h4 class="title">Billing details</h4>
+                            </div>
+<div>
+    <% if (userdata.addresses[0]) { %>
+     
+  
+    <div class="account-address">
+        <input class="abc" name="address" value="<%= userdata.addresses[0]._id %>" 
+         checked type="radio"><label class="m-2" for="radio">
+            Default Address</label>
+          
+       
+        <h4 class="account-title">
+            Address 
+        </h4>
+        <h6 class="name">
+            <%= userdata.addresses[0].name %>
+        </h6>
+        <p>
+            <%= userdata.addresses[0].street %>
+            ,
+            <%= userdata.addresses[0].landmark %>
+            ,
+            <%= userdata.addresses[0].city %>
+            <br>
+            <%= userdata.addresses[0].district %>
+            ,
+            <%= userdata.addresses[0].state %>
+            ,
+            <%= userdata.addresses[0].postalCode %>
+
+
+        </p>
+        <p>Mobile: <%= userdata.addresses[0].phone %>
+        </p>
+        
+    </div>
+    <% } %>
+</div>
+
+                            <div class="single-form checkbox-checkbox">
+                                <input type="checkbox" id="account" />
+                                <label for="account">
+                                    <span></span> Saved addresses</label>
+                            </div>
+
+                            <div class="checkout-account">
+                                <% for( let i = 1; i < userdata.addresses.length; i++ ) { %>
+
+                                    <div class="account-address">
+                                        <input class="abc" name="address" value="<%= userdata.addresses[i]._id %>"  type="radio"><label class="m-2" for="radio">Ship to this address</label>
+                                          
+                                       
+                                        
+                                        <h6 class="name">
+                                            <%= userdata.addresses[i].name %>
+                                        </h6>
+                                        <p>
+                                            <%= userdata.addresses[i].street %>
+                                            ,
+                                            <%= userdata.addresses[i].landmark %>
+                                            ,
+                                            <%= userdata.addresses[i].city %>
+                                            <br>
+                                            <%= userdata.addresses[i].district %>
+                                            ,
+                                            <%= userdata.addresses[i].state %>
+                                            ,
+                                            <%= userdata.addresses[i].postalCode %>
+
+
+                                        </p>
+                                        <p>Mobile: <%= userdata.addresses[i].phone %>
+                                        </p>
+                                        
+                                    </div>
+                                
+
+                            <% } %>
+                            </div>
+<% if (userdata.addresses.length<5) { %>
+    <div class="single-form checkbox-checkbox">
+        <input value="newAddress" class="abc" name="address" type="radio" id="shipping" />
+        <label for="shipping">
+            <span></span> Ship to a different
+            address?</label>
+    </div>
+<% } %>
+                           
+
+                            <div class="checkout-shipping">
+                                <div class="row">
+                                    <div class="col-sm-8">
+                                        <div class="single-form">
+                                            <input type="text" name="name" placeholder="Name *"  />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <div class="single-form">
+                                            <label class="form-label">Street address *</label>
+                                            <input type="text" name="street" placeholder="House number and street name" />
+                                            <input type="text" name="landmark" placeholder="Landmark" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <div class="single-select2">
+                                            <div class="form-select2">
+                                                <select name="state" class="select2">
+                                                    <option value="">Select state</option>
+                                                    <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                                                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                                    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                                    <option value="Assam">Assam</option>
+                                                    <option value="Bihar">Bihar</option>
+                                                    <option value="Chandigarh">Chandigarh</option>
+                                                    <option value="Chhattisgarh">Chhattisgarh</option>
+                                                    <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                                                    <option value="Daman and Diu">Daman and Diu</option>
+                                                    <option value="Delhi">Delhi</option>
+                                                    <option value="Goa">Goa</option>
+                                                    <option value="Gujarat">Gujarat</option>
+                                                    <option value="Haryana">Haryana</option>
+                                                    <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                                    <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                                    <option value="Jharkhand">Jharkhand</option>
+                                                    <option value="Karnataka">Karnataka</option>
+                                                    <option value="Kerala">Kerala</option>
+                                                    <option value="Ladakh">Ladakh</option>
+                                                    <option value="Lakshadweep">Lakshadweep</option>
+                                                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                                    <option value="Maharashtra">Maharashtra</option>
+                                                    <option value="Manipur">Manipur</option>
+                                                    <option value="Meghalaya">Meghalaya</option>
+                                                    <option value="Mizoram">Mizoram</option>
+                                                    <option value="Nagaland">Nagaland</option>
+                                                    <option value="Odisha">Odisha</option>
+                                                    <option value="Puducherry">Puducherry</option>
+                                                    <option value="Punjab">Punjab</option>
+                                                    <option value="Rajasthan">Rajasthan</option>
+                                                    <option value="Sikkim">Sikkim</option>
+                                                    <option value="Tamil Nadu">Tamil Nadu</option>
+                                                    <option value="Telangana">Telangana</option>
+                                                    <option value="Tripura">Tripura</option>
+                                                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                                    <option value="Uttarakhand">Uttarakhand</option>
+                                                    <option value="West Bengal">West Bengal</option>
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <div class="single-form">
+                                            <input name="city" type="text" placeholder="Town / City *" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <div class="single-form">
+                                            <input name="district" type="text" placeholder="District" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <div class="single-form">
+                                            <input name="zipcode" type="text" placeholder="Postcode / ZIP" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <div class="single-form">
+                                            <input name="phonenumber"  type="text" placeholder="Phone *" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="single-form checkout-note">
+                                <label class="form-label">Order notes</label>
+                                <textarea placeholder="Notes about your order, e.g. special notes for delivery."></textarea>
+                            </div>
+                        </div>
+                        <!-- Checkout Form End -->
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="checkout-order">
+                            <div class="checkout-title">
+                                <h4 class="title">Your Order</h4>
+                            </div>
+
+                            <div class="checkout-order-table table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th class="Product-name">
+                                                Product
+                                            </th>
+                                            <th class="Product-price">
+                                                Total
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="orderItems">
+                                        
+                                            <% order.items.forEach(product => { %>
+                                                <tr class="product-row"> <!-- Add a class to the product row for styling -->
+                                                    <td class="Product-name" colspan="2"> <!-- Use colspan to make the border span both columns -->
+                                                        <p class="m-0">
+                                                            <input type="text" hidden value="" name="">
+                                                            <strong><%= product.product.name %> × <%= product.count %></strong>
+                                                        </p>
+                                                    </td>
+                                                </tr>
+                                                <tr class="product-row"> <!-- Add a class to the product row for styling -->
+                                                    <td class="Product-price" colspan="2"> <!-- Use colspan to make the border span both columns -->
+                                                        <p class="d-flex justify-content-between my-0 ms-5 ps-5">
+                                                            <span >Product Price:</span>
+                                                            <span><%= (product.productPrice * product.count).toFixed(2) %></span>
+                                                        </p>
+                                                        <% if (product.offerPriceReduction > 0) { %>
+                                                            <p class="d-flex justify-content-between my-0 ms-5 ps-5">
+                                                                <span>Product discount:</span>
+                                                                <span ><%= (product.offerPriceReduction * product.count).toFixed(2) %></span>
+                                                            </p>
+                                                        <% } %>
+                                                        <% if (product.priceAfterDiscounts < product.productPrice) { %>
+                                                            <p class="d-flex justify-content-between my-0 ms-5 ps-5">
+                                                                <span>Discounted Price:</span>
+                                                                <span ><%= (product.priceAfterDiscounts * product.count).toFixed(2) %></span>
+                                                            </p>
+                                                        <% } %>
+                                                    </td>
+                                                </tr>
+                                                
+                                            
+                                            <% }) %>
+                                            
+                                     
+                                        
+                                    </tbody>
+                                    <tfoot>
+                                        <!-- <tr>
+                                            <td class="Product-name">
+                                                <p>Subtotal</p>
+                                            </td>
+                                            <td class="Product-price">
+                                                <p><%= order.totalAmount.toFixed(2) %></p>
+                                            </td>
+                                        </tr> -->
+                                        <tr>
+                                            <td class="Product-name">
+                                                <p>Shipping</p>
+                                            </td>
+                                            <td class="Product-price">
+                                                <ul class="shipping-list">
+                                                    <!-- <li class="radio">
+                                                        <input type="radio" name="shipping" id="radio1" checked />
+                                                        <label for="radio1"><span></span>
+                                                            Flat Rate</label>
+                                                    </li> -->
+                                                    <li class="radio">
+                                                        <!-- <input type="radio" name="shipping" id="radio2" /> -->
+                                                        <label for="radio2"><span></span>
+                                                            Free
+                                                            Shipping</label>
+                                                    </li>
+                                                    <!-- <li class="radio">
+                                                        <input type="radio" name="shipping" id="radio3" />
+                                                        <label for="radio3"><span></span>
+                                                            Local
+                                                            Pickup</label>
+                                                    </li> -->
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="Product-name">
+                                                <p>Total</p>
+                                            </td>
+                                            <td class="total-price">
+                                                <p id=""><%= order.totalAmount.toFixed(2) %></p>
+                                                </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="Product-name">
+                                                        <p>Total after discount</p>
+                                                    </td>
+                                                <td class="total-price">
+                                                <p id="TotalAmountAfterDiscount"><%= order.totalAmountAfterDiscount.toFixed(2) %></p>
+                                                
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+
+                            <div class="checkout-payment">
+                                <ul>
+                                    <!-- <li>
+                                        <div class="single-payment">
+                                            <div class="payment-radio radio">
+                                                <input type="radio" name="radio" id="bank" />
+                                                <label for="bank"><span></span> Direct
+                                                    bank transfer
+                                                </label>
+
+                                                <div class="payment-details">
+                                                    <p>
+                                                        Please send a Check
+                                                        to Store name with
+                                                        Store Street, Store
+                                                        Town, Store State,
+                                                        Store Postcode,
+                                                        Store Country.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="single-payment">
+                                            <div class="payment-radio radio">
+                                                <input type="radio" name="radio" id="check" />
+                                                <label for="check"><span></span> Check
+                                                    payments
+                                                </label>
+
+                                                <div class="payment-details">
+                                                    <p>
+                                                        Please send a check
+                                                        to Store Name, Store
+                                                        Street, Store Town,
+                                                        Store State /
+                                                        County, Store
+                                                        Postcode.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li> -->
+                                        <div class="single-payment">
+                                            <div class="payment">
+                                                
+                                                <input type="checkbox" value="useWallet" name="useWallet" id="useWallet" onclick="updateWallet()"  />
+                                                <label for="cash"><span></span> Use wallet </label><span class="ms-3 text-muted">(Balance: <%= Wallet.balance.toFixed(2) %>)</span>
+
+                                                
+                                            </div>
+                                        </div>
+                                        <div class="single-payment">
+                                            <div class="payment-radio radio">
+                                                <input type="radio" value="COD" name="paymentMethod" id="cash" checked="checked" />
+                                                <label for="cash"><span></span> Cash on
+                                                    Delivery</label>
+
+                                                <div class="payment-details">
+                                                    <p>
+                                                        Pay with cash upon
+                                                        delivery.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="single-payment">
+                                            <div class="payment-radio radio">
+                                                <input type="radio" value="razorpay" name="paymentMethod" id="paypal" />
+                                                <label for="paypal"><span></span> Razorpay
+                                                    <img class="payment" src="/imgs/images/payment-2.html" alt="" />
+                                                    </label>
+
+                                                <div class="payment-details">
+                                                    <p>
+                                                        Pay via Razorpay; you
+                                                        can pay with your
+                                                        credit card,UPI ,Netbanking and wallets
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+
+                                <div class="flex flex-row">
+                                    <button  class="place-order" type="submit">Place Order</button>
+                                    <button  class="cancel-btn" onclick="backToCart('<%= order._id %>')" type="button">Go back</button>
+                                
+                                </div>
+                              
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Checkout Section End -->
+    <%- include('footer.ejs') %>

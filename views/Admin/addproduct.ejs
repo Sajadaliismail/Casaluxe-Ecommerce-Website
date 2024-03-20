@@ -1,0 +1,110 @@
+<%- include('header.ejs') %>
+
+
+    <main class="main-wrap">
+        <header class="main-header navbar"></header>
+        <section class="content-main">
+            <form id="addproduct" action="/admin/api/addproduct" enctype="multipart/form-data" method="post">
+            <div class="row">
+                <div class="col-9">
+                    <div class="content-header">
+                        <h2 class="content-title">Add New Product</h2>
+                        <h6 class="text-danger"><%= locals.message %></h6>
+                        <div>
+                            <button id="submitbtn" type="submit" class="btn btn-md rounded font-sm hover-up">Publish</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <label for="product_title" class="form-label">Product name</label>
+                                <input pattern=".*\S+.*" title="Please enter a value other than space." type="text"  placeholder="Type here" name="name" class="form-control" id="product_title">
+                            </div>
+                            <div class="row gx-3">
+                                <div class="col-md-4  mb-3">
+                                    <label for="product_sku" class="form-label">SKU</label>
+                                    <input pattern=".*\S+.*" title="Please enter a value other than space." type="text" placeholder="Type here" name="sku" class="form-control" id="product_sku">
+                                </div>
+                                <div class="col-md-4  mb-3">
+                                    <label for="product_color" class="form-label">Material type</label>
+                                    <input pattern=".*\S+.*" title="Please enter a value other than space." type="text" placeholder="Type here" name="material" class="form-control" id="product_material">
+                                </div>
+                                <div class="col-md-4  mb-3">
+                                    <label for="product_size" class="form-label">Color</label>
+                                    <input pattern=".*\S+.*" title="Please enter a value other than space." type="text" placeholder="Type here" name="color" class="form-control" id="product_color">
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="product_brand" class="form-label">Dimensions</label>
+                                <input pattern=".*\S+.*" title="Please enter a value other than space." type="text" placeholder="Type here" name="dimensions" class="form-control" id="product_dimensions">
+                            </div>
+                            <div class="mb-4">
+                                <label for="product_brand" class="form-label">Details</label>
+                                <input  type="text" placeholder="Type here" name="details" class="form-control" id="product_details">
+                            </div>
+                        </div>
+                    </div> <!-- card end// -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div>
+                                <label class="form-label">Description</label>
+                                <textarea placeholder="Type here" name="description" id="product_description" class="form-control" rows="4"></textarea>
+                            </div>
+                        </div>
+                    </div> <!-- card end// -->
+    
+                </div>
+                <div class="col-lg-5">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <label class="form-label">Price</label> <span class="text-danger mx-2" id="pricealert"></span>
+                                <input type="number" id="price" min="1" oninput="pricecheck()" name="price" placeholder="Type here" class="form-control">
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Stock</label><span class="text-danger mx-2" id="stockalert"></span>
+                                <input type="number" id="stock" oninput="stockcheck()" name="stock" placeholder="Type here" class="form-control">
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Product offer</label>
+                                <input type="number" id="stock"  name="productOffer" placeholder="Type here" class="form-control">
+                            </div>
+                            <hr>
+                            <h5 class="mb-3">Categories</h5>
+                            
+                                <select class="form-select " name="category" style="width: 100%;" class="mb-3" id="category">
+                                    <% category.forEach(category => { %>
+                                        <option value="<%= category._id %>"><%= category.name %></option>
+                                      <% }); %>
+                                      
+                                </select>
+                                <h5 class="my-3">Roomtype</h5>
+                                
+                                    <select class="form-select " name="roomtype" style="width: 100%;" id="roomtype">
+                                        <% roomtype.forEach(roomtype => { %>
+                                            <option value="<%= roomtype._id %>"><%= roomtype.name %></option>
+                                          <% }); %>
+                                    </select>
+                                    <h5 class="my-3">Status</h5>
+                                    <select class="form-select" name="status" style="width: 100%;" id="status">
+                                    <option value="true">Active</option>
+                                <option value="false">Disabled</option></select>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="card mb-4 ">
+                        <div class="card-body">
+                           
+                            <input class="form-control" type="file" id="imageInput" multiple>
+                            <div id="imageContainer"  ></div>
+                        </div>
+                    </div> <!-- card end// -->
+                </form> <!-- card end// -->
+                </div>
+            </div>
+        </section>
+        
+    
+        <%- include('footer.ejs') %>

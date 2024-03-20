@@ -1,0 +1,105 @@
+<%- include('header.ejs') %>
+
+
+    <main class="main-wrap">
+        <header class="main-header navbar"></header>
+        <section class="content-main">
+            <form action="/admin/api/addproduct" method="post">
+            <div class="row">
+                <div class="col-9">
+                    <div class="content-header">
+                        <h2 class="content-title"><%= product.name %></h2>
+                        <h4></h4>
+                        <div>
+                            <a href=""></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <label for="product_title" class="form-label">Product name</label>
+                                <input type="text" readonly="true" placeholder="" name="name" value="<%= product.name %>" class="form-control" id="product_title">
+                            </div>
+                            <div class="row gx-3">
+                                <div class="col-md-4  mb-3">
+                                    <label for="product_sku" class="form-label">SKU</label>
+                                    <input type="text" readonly="true" placeholder="" name="sku" value="<%= product.sku %>" class="form-control" id="product_sku">
+                                </div>
+                                <div class="col-md-4  mb-3">
+                                    <label for="product_color" class="form-label">Material type</label>
+                                    <input type="text" placeholder="" readonly="true" name="material" value="<%= product.material %>" class="form-control" id="product_color">
+                                </div>
+                                <div class="col-md-4  mb-3">
+                                    <label for="product_size" class="form-label">Color</label>
+                                    <input type="text" placeholder="" readonly="true" name="color" value="<%= product.color %>" class="form-control" id="product_size">
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="product_brand" class="form-label">Dimensions</label>
+                                <input type="text" placeholder="" readonly="true" name="dimensions" value="<%= product.dimensions %>" class="form-control" id="product_brand">
+                            </div>
+                            <div class="mb-4">
+                                <label for="product_brand" class="form-label">Details</label>
+                                <input type="text" placeholder="" readonly="true" name="details" value="<%= product.details %>" class="form-control" id="product_brand">
+                            </div>
+                        </div>
+                    </div> <!-- card end// -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div>
+                                <label class="form-label">Description</label>
+                                <textarea placeholder="" readonly="true" name="description" value="" class="form-control" rows="4"><%= product.description %></textarea>
+                            </div>
+                        </div>
+                    </div> <!-- card end// -->
+                    <div class="card mb-4 ">
+                        <div class="card-body">
+                            <div class="">
+                                <h3 class="text-center">Images</h3>
+                                <% for(let i = 0 ; i < product.image.length ; i++ ) { %>
+                                <img style="height: 200px;width: 200px;"  src="/imgs/uploads/<%= product.image[i] %>" class= "img-thumbnail" alt="">
+                                <% } %>
+                               
+                                
+                            </div>
+                            
+                        </div>
+                    </div> <!-- card end// -->
+                </div>
+                <div class="col-lg-3">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <label class="form-label">Price</label>
+                                <input type="text" readonly="true" value="<%= product.price %>" name="price" placeholder="" class="form-control">
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Stock</label>
+                                <input type="text" readonly="true" name="stock" value="<%= product.price %>" placeholder="" class="form-control">
+                            </div>
+                            
+                            <hr>
+                            <h5 class="mb-3">Categories</h5>
+                            <input type="text" class="form-control" readonly="true" value="<%if(product.category){%><%= product.category.name %>
+                            <% } else { %>Deleted
+                            <% } %>">
+                               
+        
+                                <h5 class="my-3">Roomtype</h5>
+                                <input type="text" class="form-control text-`" readonly="true" value="<% if (product.roomtype) { %><%= product.roomtype.name %>
+                                <% } else { %>Deleted
+                                <% } %>">
+                                
+                                    <h5 class="my-3">Status</h5>
+                                    <input type="text" class="form-control" readonly="true" value="<% if (product.status==true) { %>Active<% } else { %>Disabled<% } %>">
+                                   
+                        </div>
+                    </div></form> <!-- card end// -->
+                </div>
+            </div>
+        </section>
+        
+    
+        <%- include('footer.ejs') %>

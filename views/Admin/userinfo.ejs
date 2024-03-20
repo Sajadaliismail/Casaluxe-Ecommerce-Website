@@ -1,0 +1,39 @@
+<%- include('header.ejs') %>
+    <main class="main-wrap">
+        <header class="main-header navbar"></header>
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">User information</h2>
+                    
+                </div></div>
+            <div class="card mb-4">
+              
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <tr>
+                                <td class="header-column">Name</td>
+                                <td><%= user.name %></td>
+                              </tr>
+                              <tr>
+                                <td class="header-column">Email</td>
+                                <td><%= user.email %></td>
+                              </tr>
+                              <tr>
+                                <td class="header-column">Mobile</td>
+                                <td><%= user.phone %></td>
+                              </tr>
+                              <tr>
+                                <td class="header-column">Status</td>
+                                <td><%= user.isBlocked %></td>
+                              </tr>
+                            
+                        </table>
+                    </div>
+                </div> <!-- card-body end// -->
+            </div> <!-- card end// -->
+            
+        </section> <!-- content-main end// -->
+        
+        <%- include('footer.ejs') %>

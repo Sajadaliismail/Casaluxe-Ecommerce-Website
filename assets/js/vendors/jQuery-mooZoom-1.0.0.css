@@ -1,0 +1,14 @@
+/* 
+    Document   : jQuery-mooZoom-1.0.0
+    Created on : 05.01.2014, 00:34:24
+    Author     : martin.eckardt
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+.mooZoom-big-detail { 
+    -moz-box-shadow: 0px 0px 10px #000;
+    -webkit-box-shadow: 0px 0px 10px #000;
+    box-shadow: 0px 0px 10px #000;
+}
+

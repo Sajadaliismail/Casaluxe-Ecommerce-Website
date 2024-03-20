@@ -1,0 +1,115 @@
+<%- include('header.ejs') %>
+
+
+    <main class="main-wrap">
+        <header class="main-header navbar"></header>
+        <section class="content-main">
+         
+          
+
+            <div class="container mt-4">
+                <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="pills-daily-tab" data-bs-toggle="pill" href="#pills-daily" role="tab" aria-controls="pills-daily" aria-selected="true">Last 30 days</a>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="pills-monthly-tab" onclick="monthly()" data-bs-toggle="pill" href="#pills-monthly" role="tab" aria-controls="pills-monthly" aria-selected="false">Monthly</a>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="pills-yearly-tab" onclick="yearly()" data-bs-toggle="pill" href="#pills-yearly" role="tab" aria-controls="pills-yearly" aria-selected="false">Yearly</a>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="pills-custom-tab" onclick="daily()" data-bs-toggle="pill" href="#pills-custom" role="tab" aria-controls="pills-custom" aria-selected="false">Custom</a>
+                  </li>
+              
+                </ul>
+                <div class="tab-content" id="pills-tabContent">
+                  <div class="tab-pane fade show active" id="pills-daily" role="tabpanel" aria-labelledby="pills-daily-tab">
+                    <div class="d-flex flex-row">
+                    <div  class="col-lg-8">
+                        <canvas id="myChart"></canvas>
+                      </div>
+                      <div id="pieChartContainer">
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                  </div>
+                  </div>
+                  <div class="tab-pane fade" id="pills-monthly" role="tabpanel" aria-labelledby="pills-monthly-tab">
+                    <div class="d-flex flex-row">
+                      <div id="myChartMonthlyContainer" class="col-lg-8">
+                        <canvas id="myChartMonthly"></canvas>
+                      </div>
+                      <div class="col-lg-4" id="pieChartContainerMonthly">
+                        <canvas id="pieChartMonthly"></canvas>
+                    </div>
+                  </div>
+                  </div>
+                  <div class="tab-pane fade" id="pills-yearly" role="tabpanel" aria-labelledby="pills-yearly-tab">
+                    <div class="d-flex flex-row">
+                      <div class="col-lg-8">
+                        <canvas id="myChartYearly"></canvas>
+                      </div>
+                      <div class="col-lg-4" id="pieChartContainerYearly">
+                        <canvas id="pieChartYearly"></canvas>
+                    </div>
+                  </div>
+                  </div>
+                  <div class="tab-pane fade" id="pills-custom" role="tabpanel" aria-labelledby="pills-custom-tab">
+                    <div class="row">
+                      <div class="col">
+                    <label for="startDate">Start Date:</label>
+<input class="form-control" type="date" id="startDateChart" name="startDateChart">
+</div>
+<div class="col">
+<label for="endDate">End Date:</label>
+<input class="form-control" type="date" id="endDateChart" name="endDateChart">
+</div>
+<div class="text-center mt-3 d-flex gap-5 justify-content-center">
+<button class="btn btn-primary" onclick="custom()">Get data</button></div>
+                    <div class="d-flex flex-row">
+                      <div class="col-lg-8">
+                        <canvas id="myChartCustom"></canvas>
+                      </div>
+                      <div class="col-lg-4" id="pieChartContainerCustom">
+                        <canvas id="pieChartCustom"></canvas>
+                    </div>
+                  </div>
+                  </div>
+                </div>
+              </div>
+              </div>
+               <div class="mb-4">
+          <form id="" class="mt-3">
+            <div class="row">
+              <div class="col">
+                <label for="startDate" class="form-label">Start Date:</label>
+                <input type="date" id="startDate" name="startDate" class="form-control">
+              </div>
+              <div class="col">
+                <label for="endDate" class="form-label">End Date:</label>
+                <input type="date" id="endDate" name="endDate" class="form-control">
+              </div>
+            </div>
+            <div class="text-center mt-3 d-flex gap-5 justify-content-center">
+              <button type="button" onclick="pdfReport()" class="btn btn-primary">Generate pdf Report</button>
+              <button type="button" onclick="excelReport()" class="btn btn-primary">Generate excel Report</button>
+
+            </div>
+          </form>
+        </div>
+             </section> <!-- content-main end// -->
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                    document.write(new Date().getFullYear())
+                    </script> ©, Evara - HTML Ecommerce Template .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">
+                        All rights reserved
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <%- include('footer.ejs') %>

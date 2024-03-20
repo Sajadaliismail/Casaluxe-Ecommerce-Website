@@ -1,0 +1,314 @@
+<%- include('header.ejs') %>
+
+
+    <!-- Page Banner Section Start -->
+    <div class="section page-banner-section" style="background-image: url(/imgs/images/page-banner.jpg); height: 65%;">
+        <div class="container">
+            <!-- Page Banner Content End -->
+            <div class="page-banner-content">
+                <h2 class="title">Shop Page</h2>
+
+                <ul class="breadcrumb">
+                    <li><a href="/">Home</a></li>
+                    <li class="active">Shop Page</li>
+                </ul>
+            </div>
+            <!-- Page Banner Content End -->
+        </div>
+    </div>
+    <!-- Page Banner Section End -->
+
+    <!-- Shop Section Start -->
+    <div class="section section-padding">
+        <div class="container">
+            <!-- Product Section Wrapper Start -->
+            <div class="product-section-wrapper">
+                <div class="row flex-row-reverse">
+                <div class="col-lg-9">
+                <!-- Shop top Bar Start -->
+                <div class="shop-top-bar">
+                    <div class="shop-text">
+                        <p>
+                           
+                            <span><%= items.length %></span> Product Found of <span><%= totalCount %></span>
+                        </p>
+                    </div>
+                    <div class="shop-sort">
+                        
+                        
+                        <ul class="list-inline d-flex gap-3">
+                            <li class="list-inline-item"><a href="/shop/newarrivals">New Arrivals</a></li>
+                            <li class="list-inline-item"><a href="/shop/sortname">Aa - Zz <i class="fas fa-sort-alpha-up"></i></a></li>
+                            <li class="list-inline-item"><a href="/shop/sortnameup">Zz - Aa <i class="fas fa-sort-alpha-down"></i></a></li>
+                            <li class="list-inline-item"><a href="/shop/pricelowtohigh">Price <i class="fas fa-sort-amount-up"></i></a></li>
+                            <li class="list-inline-item"><a href="/shop/pricehightolow">Price <i class="fas fa-sort-amount-down"></i></a></li>
+
+                        </ul>
+                            </div>
+                     
+                    </div>
+               
+                <!-- Shop top Bar End -->
+
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="grid">
+                        <!-- Shop Product Wrapper Start -->
+                        <div class="shop-product-wrapper">
+                            <div class="row ">
+                                <% if (items.length>0) { %> 
+                                    
+                               
+                                <% const currentDate = new Date(); %>
+<% const tenDaysAgo = new Date(currentDate); %>
+<% tenDaysAgo.setDate(currentDate.getDate() - 5); %>
+                                <% items.forEach((item,index) => { %>
+                                    <div id="errornumber" style="display: none;"></div>
+                                    <input value="1" style="display: none;" id="count<%= item._id %>">
+                                <div class="col-lg-4 col-sm-6">
+                                    <!-- Single Product Start -->
+                                  
+                                    <div class="single-product">
+                                        <a href="/product/<%= item.id %>">
+                                            <% if (item.stock<10) { %>
+                                                <span  class="stock-tag">Only <%= item.stock %> left !!</span>
+                                            <% } %>
+                                            <% const productDate = new Date(item.date); %>
+                                            <% if (productDate >= tenDaysAgo) { %>
+                                                <span  class="day-tag">New</span>
+                                            <% } %>
+                                            <% if (item.stock==0) { %>
+                                                <span  class="stock-tag">No stock !!</span>
+                                            <% } %>
+                                            <img src="/imgs/uploads/<%= item.image[0] %>" width="270" height="303" alt="product" /></a>
+                                        <div class="product-content">
+                                            <h4 class="title">
+                                                <a href="/product/<%= item.id %>"><%= item.name %></a>
+                                            </h4>
+                                            <div class="price">
+                                                <% if(item.offer && item.offer>0){ %>
+                                                    <span class="old-price">₹ <%= item.price.toFixed(2) %></span>
+                                                    <span class="sale-price"
+                                                            >₹ <%= (Number(item.price)-(Number(item.price)*Number(item.offer)/100)).toFixed(2) %></span>
+                                               
+                                                  <% } else{ %>  
+                                                    <span class="sale-price"
+                                                    >₹ <%= item.price.toFixed(2) %></span>
+                                                 <% } %>
+                                                
+                                                
+                                            </div>
+                                        </div>
+                                        <ul class="product-meta">
+                                            <li>
+                                                <a class="action" data-bs-toggle="modal" data-bs-target="#quickView<%= index %>" href="#"><i
+                                                            class="pe-7s-search"
+                                                        ></i></a>
+                                            </li>
+                                            <li>
+                                           
+                                                <a  onclick="addtocart('<%= item._id %>')" class="action" title="Add to cart"><i
+                                                            class="pe-7s-shopbag"
+                                                        ></i></a>
+                                 
+
+                                            </li>
+                                            <li>
+                                                <a  onclick="addtowishlist('<%= item._id %>')" class="action" title="Add to wishlist"><i
+                                                            class="pe-7s-like"
+                                                        ></i></a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <!-- Single Product End -->
+                                </div>
+                                <div class="modal fade" id="quickView<%= index %>">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-lg-6">
+                                                        <!-- Quick View Images Start -->
+                                                        <div class="product-details-images">
+                                                            <!-- Details Gallery Images Start -->
+                                                            <div class="details-gallery-images" id="img-container">
+                                                                <div class="swipder-container">
+                                                                    <div class="swidper-wrapper">
+                                
+                                                               
+                                                                            <div class="swiper-slide single-img zoom">
+                                                                                <img src="/imgs/uploads/<%= item.image[0] %>" width="570" height="604" alt="Product Image" />
+                                                                            </div>
+                                                          
+                                
+                                                                        
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!-- Details Gallery Images End -->
+                                
+                                                            <!-- Details Gallery Thumbs Start -->
+                                                           
+                                                            <!-- Details Gallery Thumbs End -->
+                                                        </div>
+                                                        <!-- Quick View Images End -->
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <!-- Quick View Description Start -->
+                                                        <div class="quick-view-description">
+                                                            <h4 class="product-name">
+                                                                <%= item.name %>
+                                                            </h4>
+                                                            <div class="price">
+                                                                <% if(item.offer && item.offer>0){ %>
+                                                                    <span class="old-price">₹ <%= item.price.toFixed(2) %></span>
+                                                                    <span class="sale-price"
+                                                                            >₹ <%= (Number(item.price)-(Number(item.price)*Number(item.offer)/100)).toFixed(2) %></span>
+                                                               
+                                                                  <% } else{ %>  
+                                                                    <span class="sale-price"
+                                                                    >₹ <%= item.price.toFixed(2) %></span>
+                                                                 <% } %>
+                                                            </div>
+                                                            <!-- <div class="review-wrapper">
+                                                                <div class="review-star">
+                                                                    <div class="star" style="width: 80%"></div>
+                                                                </div>
+                                                                <p>( 1 Customer Review )</p>
+                                                            </div> -->
+                                                            <div class="product-color">
+                                                                <span class="lable">Color: <%= item.color %></span>
+                                                               
+                                                            </div>
+                            
+                                                            <p>
+                                                                <%= item.details %>
+                                                            </p>
+                            
+                                                            <div class="d-flex col gap-2 align-items-center">
+                                                                <div class="product-quantity d-inline-flex">
+
+                                                                    <button type="button" class="sub">
+                                                                        -
+                                                                    </button>
+                                                                <input min="1"  class="form-control" id="count<%= item._id %>" type="number" value="1" />
+                            
+                                                                    <button type="button" class="add">
+                                                                        +
+                                                                    </button>
+                                                                    <div class="text-danger " style="font-size: x-small;" id="errornumber"></div>
+                                                                    <!-- <input min="1"  class="form-control" id="count<%= item._id %>" type="number" value="1" /> -->
+                                                                  
+                                                                </div>
+                                                                <div class="meta-action">
+
+                                                                    <button onclick="addtocart('<%= item._id %>')" class="btn btn-dark btn-hover-primary">
+                                                                        Add To Cart
+                                                                    </button>
+                                                                </div>
+                                                                <div class="meta-action">
+                                                                    <a  onclick="addtowishlist('<%= item._id %>')" class="action" title="Add to wishlist"></i></a>
+                                                                </div>
+                                                                <div class="meta-action">
+                                                                    <a class="action" href="#"><i class="pe-7s-shuffle"></i></a>
+                                                                </div>
+                                                            </div>
+                            
+                                                            <div class="product-info">
+                                                                <div class="single-info">
+                                                                    <span class="lable">SKU : <%= item.sku %></span>
+                                                                
+                                                                </div>
+                                                                <div class="single-info">
+                                                                    <span class="lable">Categories:</span>
+                                                                    <span class="value"
+                                                                    ><a href="#"><%= item.category.name %>,</a>
+                        
+                                                                </div>
+                                                                <div class="single-info">
+                                                                    <span class="lable">Roomtype:</span>
+                                                                    <span class="value"
+                                                                    ><a href="#"><%= item.roomtype.name %></a></span>
+                                                                </div>
+                                                                <div class="single-info">
+                                                                    <span class="lable">Description:</span>
+                                                                    <span class="value"><%= item.description %></span>
+                                                            </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- Quick View Description End -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <% }); %>
+                               
+                                <% } else { %>  <div id="noItemsMessage" class="alert alert-warning text-center" >
+                                    No items found.
+                                </div>
+                                
+                                <% } %> 
+                          
+                            
+                        </div>
+                       
+                        <!-- Shop Product Wrapper End -->
+                    </div>
+                </div>
+
+                
+                <!-- Page pagination Start -->
+                <div class="page-pagination">
+                    
+                       
+         
+                    <ul class="pagination justify-content-center">
+                        <% if (currentPage > 1) { %>
+                        <li class="page-item"><a class="page-link" href="<%= link %><%= currentPage - 1  %>&limit=9"><i class="fa fa-angle-left"></i></a></li>
+                        <% } %>
+                        <% for( let index = 1; index <= totalPages; index++ ) { %>
+                            <li class="page-item"><a class="page-link <% if (index == currentPage) { %> active
+                             
+                            <% } %>"  href="<%= link %><%= index  %>&limit=9"><%= index %></a></li>
+                        <% } %>
+                        <% if (currentPage < totalPages) { %>
+                            <li class="page-item"><a class="page-link" href="<%= link %><%= currentPage + 1  %>&limit=9"><i class="fa fa-angle-right"></i></a></li>
+                            <% } %>
+                    </ul>
+                </div>
+                <!-- Page pagination End -->
+            </div>
+            <!-- Product Section Wrapper End -->
+        </div>
+        <div class="col-lg-3">
+            <div class="sidebar">
+                <input hidden  type="text" id="rangeOfTheSlider" value="<%= locals.price %>">
+           
+           
+                    <form id="" action="/shop/advancedSearch" method="get">
+                        
+                    
+                        <div class="sidebar-widget">
+                            <h4 class="widget-title">Filter By Price</h4>
+                            <div class="widget-price">
+                                <input id="price-range" name="price" type="text">
+                            </div>
+                        </div>
+                        <button class="btn btn-dark btn-hover-primary"  type="submit">Advanced Search</button>
+                    </form>
+                </div>
+                <!-- Sidebar Widget End -->
+               
+           
+            </div>
+           
+        </div>
+        
+    </div>
+    <!-- Shop Section End -->
+
+    <%- include('footer.ejs') %>

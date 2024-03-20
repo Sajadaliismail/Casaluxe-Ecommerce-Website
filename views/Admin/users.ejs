@@ -1,0 +1,50 @@
+<%- include('header.ejs') %>
+    <main class="main-wrap">
+        <header class="main-header navbar"></header>
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">User List</h2>
+                    
+                </div></div>
+            <div class="card mb-4">
+                <!-- card-header end// -->
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="myTable" class="table table-hover">
+                            <thead>
+                                <tr>
+                                    
+                                    <th>No</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Status</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for(let i = 0 ; i < user.length ; i++ ) { %>
+                                <tr>
+                                    
+                                  <td><%= i + 1 %></td>
+                                  <td><a href="/admin/api/userinfo/<%= user[i]._id%>"><%= user[i].name %></a></td>
+                                  <td><%= user[i].email %></td>
+                                  <td><%= user[i].phone %></td>
+                                  <td><% if (user[i].isBlocked==false) { %>Active<% } else { %>Blocked<% } %></td>
+                                  <td class="d-flex flex-row text-center">
+                                            <button onclick="blockunblock(this)"  style="width: 75%; padding: 0;" data-block-id=<%= user[i]._id%>  class="<% if (user[i].isBlocked==false) { %>btn btn-danger btn-sm<% } else { %>btn btn-primary btn-sm<% } %> btn" type=""><% if (user[i].isBlocked==false) { %>Block<% } else { %>Unblock<% } %></button>
+                                        </div>
+                                    </div> <!-- dropdown //end -->
+                                </td>
+                                </tr> 
+                                <% } %>
+                              </tbody>
+                            
+                        </table>
+                    </div>
+                </div> <!-- card-body end// -->
+            </div> <!-- card end// -->
+            
+        </section> <!-- content-main end// -->
+        <%- include('footer.ejs') %>

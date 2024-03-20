@@ -1,0 +1,141 @@
+<%- include('header.ejs') %>
+
+<main class="main-wrap">
+  <header class="main-header navbar"></header>
+  <section class="content-main">
+    <div class="content-header">
+      <div>
+        <h2 class="content-title card-title">Categories</h2>
+        <p>Add, edit or delete a category</p>
+      </div>
+      <div>
+        <input
+          type="text"
+          placeholder="Search Categories"
+          class="form-control bg-white"
+        />
+      </div>
+    </div>
+    <div class="card" id="space">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-3">
+            <form method="" action="" id="newcategory">
+              <div class="mb-4">
+                <label for="name" class="form-label">Name</label>
+                <input
+                  type="text"
+                  placeholder="Type here"
+                  value=""
+                  class="form-control"
+                  id="name"
+                  name="name"
+                />
+              </div>
+              <div class="mb-4">
+                <label for="url" class="form-label">Url</label>
+                <input
+                  type="text"
+                  placeholder="Type here"
+                  value=""
+                  class="form-control"
+                  id="url"
+                />
+              </div>
+              
+             
+              <div class="mb-4">
+                <label for="description" class="form-label">Description</label>
+                <textarea
+                  id="description"
+                  placeholder="Type here"
+                  value=""
+                  class="form-control"
+                ></textarea>
+              </div>
+             
+              <div class="d-grid">
+                <button
+                  class="btn btn-primary"
+                  id="submitButtoncategory"
+                  type="button"
+                  onclick=""
+                >
+                  Create category
+                </button>
+              </div>
+            </form>
+            <div class="text-center" id="result"><%= locals.message %></div>
+          </div>
+          <div class="col-md-9">
+            <div class="table-responsive">
+              <table id="myTable" class="table table-hover">
+                <thead>
+                  <tr>
+                   
+                    <th>No</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>url</th>
+                    <th>Status</th>
+
+                    
+                    <th class="text-end">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for(let i = 0 ; i < category.length ; i++ ) { %>
+                  <tr>
+                    
+                    <td><%= i + 1 %></td>
+                    <td><%= category[i].name %></td>
+                    <td><%= category[i].description %></td>
+                    <td><%= category[i].url %></td>
+                    <th><% if (category[i].isActive) { %>
+                      Active
+                  <% } else { %>
+                      Inactive
+                  <% } %></th>
+
+                  
+                    <td class="d-flex flex-row text-center">
+                      <a class="dropdown-item w-50 p-0"  href="/admin/api/category?id=<%= category[i]._id%>">Edit</a>
+                      <a class="dropdown-item w-50 p-0 text-danger delete" href="" data-id="<%=category[i]._id%>">
+                        <% if (category[i].isActive) { %>
+                          Unlist
+                      <% } else { %>
+                          Unblock
+                      <% } %></a>
+               
+          </td>
+
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- .col// -->
+        </div>
+        <!-- .row // -->
+      </div>
+      <!-- card body .// -->
+    </div>
+    <!-- card .// -->
+  </section>
+  <!-- content-main end// -->
+  <footer class="main-footer font-xs">
+    <div class="row pb-30 pt-15">
+      <div class="col-sm-6">
+        <script>
+          document.write(new Date().getFullYear());
+        </script>
+        ©, Evara - HTML Ecommerce Template .
+      </div>
+      <div class="col-sm-6">
+        <div class="text-sm-end">All rights reserved</div>
+      </div>
+    </div>
+  </footer>
+  <%- include('footer.ejs') %>
+</main>

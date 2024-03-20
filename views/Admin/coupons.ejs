@@ -1,0 +1,75 @@
+<%- include('header.ejs') %>
+
+<main class="main-wrap">
+  <header class="main-header navbar"></header>
+  <section class="content-main">
+    <div class="content-header">
+      <h2 class="content-title">Coupon Management</h2>
+      <div>
+        <a href="/admin/createCoupon" class="btn btn-primary">Create new</a>
+      </div>
+    </div>
+    <div class="card" id="space">
+      <div class="card-body">
+        <div class="row">
+
+  
+    <div class="col-md-12">
+
+     
+        <div class="mt-4">
+          <table id="myTable" class="table table-hover">
+            <thead>
+              <tr>
+               
+                <th>No</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Coupon code</th>
+                <th>Coupon discount</th>
+                <th>Expiry Date</th>
+                <th class="text-end">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% coupons.forEach((coupon,index) => { %>
+                <tr>
+                  
+                  <td><%= index + 1 %></td>
+                  <td><%= coupon.name %></td>
+                  <td><% if (coupon.status) { %>
+                    Active
+                <% } else { %>
+                    Inactive
+                <% } %></td>
+                  <td><%= coupon.code %></td>
+                  <td><%= coupon.discount %> %</td>
+                  <td><%= coupon.endDate.toLocaleString() %></td>
+                  <td class="d-flex flex-row text-center">
+                    <a class="dropdown-item w-50 p-0"  href="/admin/couponEdit/<%= coupon._id%>">Edit</a>
+                    <a class="dropdown-item w-50 p-0 text-danger delete" href="" data-id="<%= coupon._id%>"><% if (coupon.status) { %>
+                      Unlist
+                  <% } else { %>
+                      Activate
+                  <% } %></a>
+             
+        </td>
+                  
+                  
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+     
+    </div>
+</div>
+</div>
+</div>
+    <!-- card end// -->
+  </section>
+  <footer class="main-footer font-xs">
+    <div class="row pb-30 pt-15">
+    </div>
+  </footer>
+  <%- include('footer.ejs') %>
+</main>

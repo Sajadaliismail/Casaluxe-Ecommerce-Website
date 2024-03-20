@@ -1,0 +1,231 @@
+<%- include('header.ejs') %>
+
+
+    <main class="main-wrap">
+        <header class="main-header navbar">
+            
+        </header>
+        <section class="content-main">
+            <input hidden id="defaultStatusOrder" value="<%= order.orderStatus %>" >
+            <input hidden id="defaultshippingStatus" value="<%= order.shippingStatus %>">
+
+                    <input hidden id="defaultpaymentStatus" value="<%= order.paymentStatus %>">
+            <form action="/admin/editorder" method="post">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Order detail</h2>
+                    <p>Details for Order ID: <%= order.orderId %></p>
+                    <input name="orderid" type="text" hidden value="<%= order._id %>">
+                </div>
+            </div>
+            <div class="card">
+                <header class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
+                            <span>
+                                <i class="material-icons md-calendar_today"></i> <b><%= order.orderdate.toLocaleString() %></b>
+                            </span> <br>
+                            <small class="text-muted"><%= order.orderId %></small>
+                        </div>
+                        <div class="col-lg-6 col-md-6 ms-auto text-md-end">
+                            
+                            <select id="ordeStatus" name="orderStatus" class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
+                                <!-- <option>Change status</option> -->
+                                <option value="pending">Pending</option>
+                                <option value="processing">Processing</option>
+                                <option value="confirmed">Confirmed</option>
+                                <option value="shipped">Shipped</option>
+                                <option value="returned">Returned</option>
+                                <option value="delivered">Delivered</option>
+                                <option value="canceled">Canceled</option>
+
+                            </select>
+                            <button type="submit" class="btn btn-primary" >Save</button>
+                            <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a>
+                        </div>
+                    </div>
+                </header> <!-- card-header end// -->
+                <div class="card-body">
+                    <div class="row mb-50 mt-20 order-info-wrap">
+                        <div class="col-md-4">
+                            <article class="icontext align-items-start">
+                                <span class="icon icon-sm rounded-circle bg-primary-light">
+                                    <i class="text-primary material-icons md-person"></i>
+                                </span>
+                                <div class="text">
+                                    <h6 class="mb-1">Customer</h6>
+                                    <p class="mb-1">
+                                        <%= order.userid.name %> <br><%= order.userid.email %> <br> <%= order.userid.phone %>
+                                    </p>
+                                    <a href="/admin/api/userinfo/<%= order.userid._id %>">View profile</a>
+                                </div>
+                            </article>
+                        </div> <!-- col// -->
+                        <div class="col-md-4">
+                            <article class="icontext align-items-start">
+                                <span class="icon icon-sm rounded-circle bg-primary-light">
+                                    <i class="text-primary material-icons md-local_shipping"></i>
+                                </span>
+                                <div class="text">
+                                    <h6 class="mb-1">Order info</h6>
+                                    <p class="mb-1">
+                                        Shipping: <%= order.shippingStatus %> <br> Pay method: <%= order.paymentmethod %> <br> Status: <%= order.orderStatus %>
+                                    </p>
+                                    <!-- <a href="#">Download info</a> -->
+                                </div>
+                            </article>
+                        </div> <!-- col// -->
+                        <div class="col-md-4">
+                            <article class="icontext align-items-start">
+                                <span class="icon icon-sm rounded-circle bg-primary-light">
+                                    <i class="text-primary material-icons md-place"></i>
+                                </span>
+                                <div class="text">
+                                    <h6 class="mb-1">Deliver to</h6>
+                                    <p class="mb-1">
+                                        Street : <%= order.address.street %>,<%= order.address.landmark %> <br>
+                                        City: <%= order.address.city %>,<%= order.address.district %> <br><%= order.address.state %> ,Post Box <%= order.address.postalCode %>
+                                    </p>
+                                    <!-- <a href="#">View profile</a> -->
+                                </div>
+                            </article>
+                        </div> <!-- col// -->
+                    </div> <!-- row // -->
+                    <div class="row">
+                        <div class="col-lg-7">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th width="40%">Product</th>
+                                            <th width="20%">Unit Price</th>
+                                            <th width="20%">Quantity</th>
+                                            <th width="20%" class="text-end">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% for( let index = 0; index < order.items.length; index++ ) { %>
+                                            <tr>
+                                                <td>
+                                                    <a class="itemside" href="/admin/api/productinfo/<%= order.items[index].product._id %>">
+                                                        <div class="left">
+                                                            <img src="/imgs/uploads/<%= order.items[index].product.image[0]  %>" width="40" height="40" class="img-xs" alt="Item">
+                                                        </div>
+                                                        <div class="info"><%= order.items[index].product.name %></div>
+                                                    </a>
+                                                </td>
+                                                <td> <%= order.items[index].product.price.toFixed(2) %> </td>
+                                                <td> <%= order.items[index].count %> </td>
+                                                <td class="text-end"><%= (order.items[index].productPrice *  order.items[index].count).toFixed(2) %> </td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td>Offer discount</td>
+                                                <td class="text-end"><%= (order.items[index].offerPriceReduction *  order.items[index].count).toFixed(2) %> </td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td>Coupon discount: </td>
+                                                <td class="text-end"><%= (order.items[index].couponDiscountReduction *  order.items[index].count).toFixed(2) %> </td>
+                                            </tr>
+                                        <% } %>
+                        
+                                            <td colspan="4">
+                                                <article class="float-end">
+                                                    <dl class="dlist">
+                                                        <dt>Subtotal:</dt>
+                                                        <dd><%= order.totalAmountAfterDiscount.toFixed(2) %></dd>
+                                                    </dl>
+                                                    <!-- <dl class="dlist">
+                                                        <dt>Shipping cost:</dt>
+                                                        <dd>$10.00</dd>
+                                                    </dl> -->
+                                                    <dl class="dlist">
+                                                        <dt>Total after discount:</dt>
+                                                        <dd> <b class="h5"><%= order.totalAmountAfterDiscount.toFixed(2) %></b> </dd>
+                                                    </dl>
+                                                    <dl class="dlist">
+                                                        <dt class="text-muted">Status:</dt>
+                                                        <dd>
+                                                            <span class="badge rounded-pill alert-success text-success"><%= order.PaymentStatus %></span>
+                                                        </dd>
+                                                    </dl>
+                                                </article>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div> <!-- table-responsive// -->
+                        </div> <!-- col// -->
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-4">
+                            <div class="box shadow-sm bg-light">
+                                <h6 class="mb-15">Payment info</h6>
+                                <hr>
+                                <p>
+                                    <!-- <img src="/imgs/card-brands/2.png" class="border" height="20"> Master Card **** **** 4768 <br> -->
+                                    <!-- Business name: Grand Market LLC <br> -->
+                                    <!-- Phone: +1 (800) 555-154-52 -->
+                                    <%= order.paymentmethod %> <br>
+                                    <hr>
+                                    <label for="paymentStatus">Payment status</label>
+                                    <select  id="paymentStatus" name="paymentStatus" class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
+                                        <!-- <option>Change status</option> -->
+                                        <option value="pending">Pending</option>
+                                        <option value="awaiting">Awaiting payment</option>
+                                        <option value="recieved">Payment recieved</option>
+                                        <option value="refund">Refund complete</option>
+                                        <option value="error">Payment Error</option>
+
+                                    </select>
+                                </p>
+                            </div>
+                            <div class="box shadow-sm bg-light">
+                                <h6 class="mb-15">Shipping info</h6>
+                                <hr>
+                                <label for="orderStatus">Shipping status</label>
+                                <select id="shippingStatus" name="shippingStatus" class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
+                                    <!-- <option>Change status</option> -->
+                                    <option value="pending">Pending</option>
+                                    <option value="awaiting">Awaiting payment</option>
+                                    <option value="packing">Packing</option>
+                                    <option value="intransit">In transit</option>
+                                    <option value="outfordelivery">Out for Delivery</option>
+                                    <option value="delivered">Delivered</option>
+                                    <option value="pickedup">Picked up</option>
+                                    <option value="returned">Returned</option>
+
+    
+                                </select>
+                          
+
+                            </div>
+                            <div class="h-25 pt-4">
+                                <div class="mb-3">
+                                    <label>Notes</label>
+                                    <textarea class="form-control" name="notes" id="notes" placeholder="Type some note"></textarea>
+                                </div>
+                         
+                            </div>
+                        </div> <!-- col// -->
+                    </div>
+                </div> <!-- card-body end// -->
+            </form>    </div> <!-- card end// -->
+        </section> <!-- content-main end// -->
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script data-cfasync="false" src="/js/email-decode.min.js"></script><script>
+                    document.write(new Date().getFullYear())
+                    </script> ©, Evara - HTML Ecommerce Template .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">
+                        All rights reserved
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <%- include('footer.ejs') %>

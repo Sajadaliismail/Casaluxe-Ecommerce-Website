@@ -1,0 +1,161 @@
+<%- include('header.ejs') %>
+
+
+    <main class="main-wrap">
+        <header class="main-header navbar"></header>
+        <section class="content-main">
+            <form id="editproduct" enctype="multipart/form-data" action="/admin/api/editproduct/<%= product._id %>" method="post">
+            <div class="row">
+                <div class="col-9">
+                    <div class="content-header">
+                        <h2 class="content-title"><%= product.name %></h2>
+        <h6 class="text-danger"><%= locals.error %></h6>
+
+                        <h4></h4>
+                        <div>
+                            <div>
+                                <button id="submitbtn" type="submit" class="btn btn-md rounded font-sm hover-up">Save Changes</button>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <label for="product_title" class="form-label">Product name</label>
+                                <input type="text" hidden placeholder="" name="objectid" value="<%= product._id %>" class="form-control" id="product_id">
+
+                                <input type="text"  placeholder="" name="name" value="<%= product.name %>" class="form-control" id="product_title">
+                            </div>
+                            <div class="row gx-3">
+                                <div class="col-md-4  mb-3">
+                                    <label for="product_sku" class="form-label">SKU</label>
+                                    <input type="text"  placeholder="" name="sku" value="<%= product.sku %>" class="form-control" id="product_sku">
+                                </div>
+                                <div class="col-md-4  mb-3">
+                                    <label for="product_color" class="form-label">Material type</label>
+                                    <input type="text" placeholder=""  name="material" value="<%= product.material %>" class="form-control" id="product_color">
+                                </div>
+                                <div class="col-md-4  mb-3">
+                                    <label for="product_size" class="form-label">Color</label>
+                                    <input type="text" placeholder=""  name="color" value="<%= product.color %>" class="form-control" id="product_size">
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="product_brand" class="form-label">Dimensions</label>
+                                <input type="text" placeholder=""  name="dimensions" value="<%= product.dimensions %>" class="form-control" id="product_brand">
+                            </div>
+                            <div class="mb-4">
+                                <label for="product_brand" class="form-label">Details</label>
+                                <input type="text" placeholder=""  name="details" value="<%= product.details %>" class="form-control" id="product_brand">
+                            </div>
+                        </div>
+                    </div> <!-- card end// -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div>
+                                <label class="form-label">Description</label>
+                                <textarea placeholder=""  name="description" value="" class="form-control" rows="4"><%= product.description %></textarea>
+                            </div>
+                        </div>
+                    </div> <!-- card end// -->
+                    <div class="card mb-4 ">
+                        <div class="card-body">
+                            
+                            
+                        </div>
+                    </div> <!-- card end// -->
+                </div>
+                <div class="col-lg-5">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <label class="form-label">Price</label><span class="text-danger mx-2" id="pricealert"></span>
+                                <input type="number" id="price" min="1" oninput="pricecheck()" value="<%= product.price %>" name="price" placeholder="" class="form-control">
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Stock</label><span class="text-danger mx-2" id="stockalert"></span>
+                                <input type="number" id="stock" oninput="stockcheck()"  min="0" name="stock" value="<%= product.stock %>" placeholder="" class="form-control">
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Product offer</label>
+                                <input type="number" id="stock"  name="productOffer" placeholder="Type here" value="<%= product.offer %>" class="form-control">
+                            </div>
+                        
+                            <hr>
+                            <h5 class="mb-3">Categories</h5>
+                            <select class="form-select " name="category" style="width: 100%;" class="mb-3" id="items">
+                                
+                                <% category.forEach(category => { %>
+                                    <option <% if (product.category && product.category.name && product.category.name === category.name) { %>selected<% } %> value="<%= category._id %>"><%= category.name %></option>
+                                <% }); %>
+                                  
+                            </select>
+                            <h5 class="my-3">Roomtype</h5>
+                            
+                                <select class="form-select " name="roomtype" style="width: 100%;" id="items">
+                                    <% roomtype.forEach(roomtype => { %>
+                                        <option <% if (product.roomtype && product.roomtype.name && product.roomtype.name === roomtype.name) { %>selected<% } %> value="<%= roomtype._id %>"><%= roomtype.name %></option>
+                                    <% }); %>
+                                    
+                                </select>
+                                <h5 class="my-3">Status</h5>
+                                <select class="form-select" name="status" style="width: 100%;" id="items">
+                                <option value="true">Active</option>
+                            <option value="false">Disabled</option></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="">
+                    <h3 class="text-center">Images</h3>
+                    <% for(let i = 0 ; i < 5 ; i++ ) { %>
+                        <% if (product.image[i]) { %>
+                    <div class="m-2 " id="imgdiv<%= i %>" class="">
+                        <input type="text" id="oldimage<%= i %>" name="oldimage" value="<%= product.image[i] %>" style="display: none;" >
+                        <button id="button<%= i %>"  class="btn btn-primary" type="button" >Change</button>
+                        <button id="deletebutton<%= i %>"  class="btn btn-dabger" type="button" >Delete</button>
+                        <input type="file"  value="<%= product.image[i] %>" style="display: none;" id="input<%= i %>">
+                    
+                    </div>
+
+                     <img class="uploadedimg" alt="Upload new image" id="image<%= i %>" style="width: 300px; height: 300px;" src="/imgs/uploads/<%= product.image[i] %>"> 
+                     <% } 
+
+                     else { %>
+                        <div class="m-2 " id="imgdiv<%= i %>" class="">
+                        <div class="my-2"><button id="button<%= i %>"  class="btn btn-primary" type="button" >Add</button>
+                        <button id="deletebutton<%= i %>" style="display: none;" class="btn btn-danger" type="button" >Delete</button>
+                        <input type="file" name="" style="display: none;" id="input<%= i %>">
+                        </div>
+                        <img class="uploadedimg"  alt="Upload new image" id="image<%= i %>" style="width: 250px; height: 250px; display: none;" src=""> 
+                    </div>
+                      <% } %>
+                       
+                        
+     
+                    
+                    <% } %>
+                    
+                    
+                </div>
+                    </form> 
+                </div>
+            </div>
+        </section>
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                    document.write(new Date().getFullYear())
+                    </script> ©, Evara - HTML Ecommerce Template .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">
+                        All rights reserved
+                    </div>
+                </div>
+            </div>
+        </footer>
+    
+        <%- include('footer.ejs') %>

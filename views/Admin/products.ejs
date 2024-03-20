@@ -1,0 +1,66 @@
+<%- include('header.ejs') %>
+    <main class="main-wrap">
+        <header class="main-header navbar"></header>
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Products List</h2>
+                    <p>Add, edit and delete products.</p>
+                </div>
+                <div>
+                   
+                    <a href="/admin/addproduct" class="btn btn-primary btn-sm rounded">Create new</a>
+                </div>
+            </div>
+            <div class="card mb-4">
+               
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="myTable" class="table table-hover" >
+                            <thead>
+                                <tr>
+                                    <th >No</th>
+                                    <th >Name</th>
+                                    <th >Offer</th>
+                                    <th >Stock</th>
+                                    <th >Price</th>
+                                    <th >Status</th>
+                                    <th >Roomtype</th>
+                                    <th >Category</th>
+                                    <th  class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for(let i = 0 ; i < product.length ; i++ ) { %>
+                                <tr>
+                                    
+                                  <td><%= i + 1 %></td>
+                                  <td><a href="/admin/api/productinfo/<%= product[i]._id%>"><%= product[i].name %></a></td>
+                                  <td><% if ( product[i].offer ) { %><%= product[i].offer %>%<% } else { %>0%<% } %></td>
+                                 
+                                  <td><%= product[i].stock %></td>
+                                  <td> ₹ <%= product[i].price %></td>
+                                  <td><% if (product[i].status==true) { %>Active<% } else { %>Disabled<% } %></td>
+                                  <td><% if (product[i].roomtype) { %><%= product[i].roomtype.name %><% } else { %>NA<% } %></td>
+                                  <td><% if (product[i].category) { %><%= product[i].category.name %><% } else { %>NA<% } %></td>
+                                  <td class="d-flex flex-row text-center">
+                                            <a class="dropdown-item w-50 p-0" href="/admin/api/editproduct/<%= product[i]._id%>">Edit</a>
+                                            <a class="dropdown-item w-50 p-0 text-danger delete" href="" data-id=<%= product[i]._id%>><% if (product[i].status) { %>
+                                                Unlist
+                                            <% } else { %>
+                                                Unblock
+                                            <% } %></a>
+                                       <!-- dropdown //end -->
+                                </td>
+                                </tr> 
+                                <% } %>
+                              </tbody>
+                            
+                        </table>
+                    </div>
+                </div> <!-- card-body end// -->
+            </div> <!-- card end// -->
+            
+        </section> <!-- content-main end// -->
+        
+        <%- include('footer.ejs') %>

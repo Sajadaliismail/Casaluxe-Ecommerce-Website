@@ -1,0 +1,132 @@
+<%- include('header.ejs') %>
+
+
+    <!-- Page Banner Section Start -->
+    <div class="section page-banner-section" style="background-image: url(/imgs/images/page-banner.jpg); height: 50%;">
+
+        <div class="container">
+            <!-- Page Banner Content End -->
+            <div class="page-banner-content">
+                <h2 class="title">Wishlist</h2>
+
+                <ul class="breadcrumb">
+                    <li><a href="index.html">Home</a></li>
+                    <li class="active">Wishlist</li>
+                </ul>
+            </div>
+            <!-- Page Banner Content End -->
+        </div>
+    </div>
+    <!-- Page Banner Section End -->
+
+    <!-- Shopping Cart Section Start -->
+    <% if(wishlist.products.length == 0){ %>
+        <div class="section section-padding">
+            <div class="container">
+                <div class="cart-wrapper">
+                    <!-- empty cart Start -->
+                    <div class="empty-cart text-center">
+                        <h2 class="empty-cart-title">
+                            There are no more items in your wishlist
+                        </h2>
+                        <div class="empty-cart-img">
+                            <img src="/imgs/images/wishlist-icon-25.jpg" alt="Cart" />
+                        </div>
+                        <p>Your wishlist is currently empty!</p>
+                        <a href="/shop" class="btn btn-primary btn-hover-dark"><i class="fa fa-angle-left"></i> Continue
+                            browsing</a>
+                    </div>
+                    <!-- empty cart End -->
+                </div>
+            </div>
+        </div>
+      <% } else{ %>
+    <div class="section section-padding">
+        <div class="container">
+            <div class="cart-wrapper">
+                <!-- Cart Wrapper Start -->
+                <div class="cart-table table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="product-thumb">Image</th>
+                                <th class="product-info">
+                                    product Information
+                                </th>
+                                <th class="product-quantity">Quantity</th>
+                                <th class="product-item-price">
+                                    Item Price
+                                </th>
+                                <th class="product-total-price">
+                                    Total Price
+                                </th>
+                                <th class="product-action">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for( let i = 0; i < wishlist.products.length; i++ ) { %> 
+
+                            <tr>
+                                <td class="product-thumb">
+                                    <img src="/imgs/uploads/<%= wishlist.products[i].product.image[0] %>" alt="" />
+                                </td>
+                                <td class="product-info">
+                                    <h6 class="name">
+                                        <a href="/product/<%= wishlist.products[i].product._id %>"><%= wishlist.products[i].product.name %></a>
+                                    </h6>
+                                    <div class="product-prices">
+                                        <span class="old-price"
+                                                ></span>
+                                        <span class="sale-price"
+                                                >₹ <%= wishlist.products[i].product.price.toFixed(2) %></span>
+                                    </div>
+                                    <div class="product-size-color">
+                                        <p>Details : <span><%= wishlist.products[i].product.details %></span></p>
+                                        <!-- <p>Color <span>White</span></p> -->
+                                    </div>
+                                </td>
+                <td class="quantity">
+                    <input id="stockProduct<%= i %>" type="number" hidden value="<%= wishlist.products[i].product.stock %>">
+
+                    <div class="product-quantity d-inline-flex">
+                        <button type="button" class="sub">
+                            -
+                        </button>
+                        <input min="" name="CartItemCount" oninput="changeprice('<%= i %>',this.value)" type="number"  id="countInput<%= i %>" value="<%= wishlist.products[i].count %>">
+    
+                        <button type="button" class="add">
+                            +
+                        </button>
+              
+                                        
+                                    </div>
+
+                                </td>
+                                <td class="product-total-price">
+                                    <span class="Total-price" data-id="<%= wishlist.products[i].product.price %>" value="<%= wishlist.products[i].product.price %>" id="itemPrice<%= i %>" >₹ <%= wishlist.products[i].product.price.toFixed(2) %></span>
+                                </td>
+                                <td class="product-total-price">
+                                    <span id="Totalprice<%= i %>" class="Total-price">₹ <%= (wishlist.products[i].product.price * wishlist.products[i].count).toFixed(2)  %></span>
+                                </td>
+                                <td class="product-action">
+                                    <button onclick="removeFromWishlist('<%= wishlist.products[i]._id %>',event)" type="button" class="remove">
+                                        <i class="pe-7s-trash"></i>
+                                    </button>
+                                    <button style="background-color: #09a451; color: #fff; font-size: 14px; border: none; padding: 8px 16px; border-radius: 4px;" onclick="moveToCart('<%= wishlist.products[i].product._id %>','<%= i %>','<%= wishlist.products[i]._id %>')" >
+                                        Add To Cart
+                                    </button>
+                                </td>
+                            </tr>
+                            <% } %>
+
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Cart Wrapper End -->
+            </div>
+        </div>
+    </div>
+    <% } %>
+    <!-- Shopping Cart Section End -->
+
+    <%- include('footer.ejs') %>

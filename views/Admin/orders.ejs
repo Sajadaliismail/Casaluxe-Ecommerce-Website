@@ -1,0 +1,92 @@
+<%- include('header.ejs') %>
+
+
+    <main class="main-wrap">
+        <header class="main-header navbar"></header>
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Order List </h2>
+                    <!-- <p>Lorem ipsum dolor sit amet.</p> -->
+                </div>
+                <div>
+                    <!-- <input type="text" placeholder="Search order ID" class="form-control bg-white"> -->
+                </div>
+            </div>
+            <div class="card mb-4">
+                <header class="card-header">
+                    <div class="row gx-3">
+                        <div class="col-lg-4 col-md-6 me-auto">
+                            <!-- <input type="text" placeholder="Search..." class="form-control"> -->
+                        </div>
+                        <div class="col-lg-2 col-6 col-md-3">
+                            <!-- <select class="form-select">
+                                <option>Status</option>
+                                <option>Active</option>
+                                <option>Disabled</option>
+                                <option>Show all</option>
+                            </select> -->
+                        </div>
+                        <div class="col-lg-2 col-6 col-md-3">
+                            <!-- <select class="form-select">
+                                <option>Show 20</option>
+                                <option>Show 30</option>
+                                <option>Show 40</option>
+                            </select> -->
+                        </div>
+                    </div>
+                </header> <!-- card-header end// -->
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="myTable">
+                            <thead>
+                                <tr>
+                                    <th>#ID</th>
+                                    <th>Name</th>
+                                    <th>Shipping status</th>
+                                    <th>Payment Status</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th class="text-end"> Action </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for( let index = 0; index < order.length; index++ ) { %>
+                                    <tr>
+                                        <td><%= index +1 %></td>
+                                        <td><b><%= order[index].userid.name %></b></td>
+                                        <td><%= order[index].shippingStatus %></td>
+                                        <td><%= order[index].paymentStatus %></td>
+                                        <td><%= order[index].orderStatus %></span></td>
+                                        <td><%= order[index].orderdate.toLocaleString() %></td>
+                                        <td><%= order[index].totalAmount.toFixed(2) %></td>
+                                        <td class="text-end">
+                                            <a href="/admin/order-details/<%= order[index]._id %>" class="btn btn-md rounded font-sm">Detail</a>
+                                           
+                                            </div> <!-- dropdown //end -->
+                                        </td>
+                                    </tr>
+                                <% } %>
+                                
+                                
+                            </tbody>
+                        </table>
+                    </div> <!-- table-responsive //end -->
+                </div> <!-- card-body end// -->
+            </div> <!-- card end// -->
+            
+        </section> <!-- content-main end// -->
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    ©, Evara - HTML Ecommerce Template .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">
+                        All rights reserved
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <%- include('footer.ejs') %>
