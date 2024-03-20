@@ -1,6 +1,6 @@
 const express = require("express");
 const route = express.Router();
-
+const session = require('express-session');
 
 
 //load controllers 
@@ -83,6 +83,9 @@ route.post('/paymentfailure',verifyToken,orderController.orderFailure)
 route.post('/rating',verifyToken,shopController.rating)
 route.post('/movetocart',verifyToken,orderController.moveToCart)
 route.post('/returnorder',verifyToken,orderController.returnOrder)
+
+route.post('/useWalletCash', verifyToken, orderController.deductMoneyFromWallet);
+route.post('/returnWalletCash', verifyToken, orderController.returnMoneyToWallet);
 
 route.post('/api/applycoupon',verifyToken,orderController.applyCoupon)
 route.post('/api/removecoupon',verifyToken,orderController.removeCoupon)

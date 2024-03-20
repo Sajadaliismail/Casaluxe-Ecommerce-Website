@@ -410,14 +410,14 @@
                                             <div class="payment">
                                                 
                                                 <input type="checkbox" value="useWallet" name="useWallet" id="useWallet" onclick="updateWallet()"  />
-                                                <label for="cash"><span></span> Use wallet </label><span class="ms-3 text-muted">(Balance: <%= Wallet.balance.toFixed(2) %>)</span>
+                                                <label for="useWallet"><span></span> Use wallet </label><span class="ms-3 text-muted">(Balance: <%= Wallet.balance.toFixed(2) %>)</span>
 
                                                 
                                             </div>
                                         </div>
                                         <div class="single-payment">
                                             <div class="payment-radio radio">
-                                                <input type="radio" value="COD" name="paymentMethod" id="cash" checked="checked" />
+                                                <input type="radio" value="COD" name="paymentMethod" id="cash"  />
                                                 <label for="cash"><span></span> Cash on
                                                     Delivery</label>
 
@@ -433,7 +433,7 @@
                                     <li>
                                         <div class="single-payment">
                                             <div class="payment-radio radio">
-                                                <input type="radio" value="razorpay" name="paymentMethod" id="paypal" />
+                                                <input type="radio" value="razorpay" name="paymentMethod" checked="true" id="paypal" />
                                                 <label for="paypal"><span></span> Razorpay
                                                     <img class="payment" src="/imgs/images/payment-2.html" alt="" />
                                                     </label>

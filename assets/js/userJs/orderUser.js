@@ -193,6 +193,7 @@ $(document).ready(function () {
             image: "/imgs/images/logo.png",
             order_id: order.id,
             handler: function (response) {
+              console.log(response);
            
               // alert(response.razorpay_payment_id);
               // alert(response.razorpay_order_id);

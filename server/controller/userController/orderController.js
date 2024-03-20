@@ -124,25 +124,31 @@ const cancelOrder = async (req, res) => {
 };
 
 const orderSuccess = async (req, res) => {
+
   const id = req.userId;
-  const orderId = req.query.orderid;
+  const orderId = req.query.orderid;console.log(req.session);
   const cart = await cartSchema.findById(id).populate({
     path: "products",
     populate: { path: "product", model: "products" },
   });
   const order = await Order.findOne({orderId:orderId})
   if(order){
+
   res.render("User/orderSuccess", { orderId, cart });
 }
 else{
+
   res.redirect('/shop')
 }
 };
 
 const orderFailure = async (req, res) => {
+
+  console.log(req.session);
   console.log(req.body);
   const orderId = req.body.orderId;
   try {
+
     await Order.findOneAndUpdate(
       { orderId: orderId },
       {
@@ -154,12 +160,22 @@ const orderFailure = async (req, res) => {
 };
 
 const placeOrder = async (req, res) => {
-  try {
-    const orderId = req.body.order_id;
-    const userId = req.userId;
-    const order = await Order.findById(orderId);
-    const userdata = await user.findById(userId);
 
+  try {
+    console.log(req.body);
+    const { order_id, address, paymentMethod } = req.body;
+    const userId = req.userId;
+
+    if (!address) {
+      return res.json({
+        status: "failed",
+        message: "Address not filled",
+        addressNotFilled: true,
+      });
+    }
+    const userdata = await user.findById(userId);
+    const order = await Order.findById(order_id)
+    
     if (order.isConfirmed) {
       return res.json({
         status: "failed",
@@ -167,6 +183,7 @@ const placeOrder = async (req, res) => {
         alreadyConfirmed: true,
       });
     }
+
     if (order.paymentStatus !== "pending") {
       return res.json({
         status: "failed",
@@ -174,46 +191,9 @@ const placeOrder = async (req, res) => {
         alreadyConfirmed: true,
       });
     }
-    if (!req.body.address) {
-      return res.json({
-        status: "failed",
-        message: "Address not filled",
-        addressNotFilled: true,
-      });
-    }
 
-    let address;
-    if (req.body.address === "newAddress") {
-      const {
-        name,
-        street,
-        landmark,
-        state,
-        city,
-        district,
-        zipcode,
-        phonenumber,
-      } = req.body;
-
-      address = new AddressSchema({
-        name: name,
-        street: street,
-        landmark: landmark,
-        state: state,
-        city: city,
-        district: district,
-        postalCode: zipcode,
-        phone: phonenumber,
-        user_id: userId,
-      });
-      await address.save();
-      userdata.addresses.push(address);
-      await userdata.save();
-    } else {
-      address = await AddressSchema.findById(req.body.address);
-    }
-    if (order.totalAmountAfterDiscount == 0) {
-      await Order.findByIdAndUpdate(orderId, {
+    if ((order.totalAmountAfterDiscount - order.walletCashUsed) === 0) {
+      await Order.findByIdAndUpdate(order_id, {
         address: address,
         isConfirmed: true,
         paymentmethod: "noPayment",
@@ -224,15 +204,23 @@ const placeOrder = async (req, res) => {
         placed: true,
       });
     }
-    if (req.body.paymentMethod === "COD") {
-      if(order.totalAmountAfterDiscount>=1000){
+
+    if (paymentMethod === "COD") {
+      if (order.totalAmountAfterDiscount >= 1000) {
         return res.json({
           status: "failed",
           message: "COD not available for orders above 1000.00",
           codnotallowed: true,
         });
       }
-      await Order.findByIdAndUpdate(orderId, {
+      else if(order.walletCashUsed > 0){
+        return res.json({
+          status: "failed",
+          message: "COD not available wallet transactions",
+          codnotallowed: true,
+        });
+      }
+      await Order.findByIdAndUpdate(order_id, {
         address: address,
         isConfirmed: true,
       });
@@ -241,14 +229,15 @@ const placeOrder = async (req, res) => {
         message: order.orderId,
         placed: true,
       });
-    } else if (req.body.paymentMethod === "razorpay") {
+    } else if (paymentMethod === "razorpay") {
       const instance = new Razorpay({
         key_id: process.env.KEY_ID,
         key_secret: process.env.KEY_SECRET,
       });
 
+      const amount = (order.totalAmountAfterDiscount - order.walletCashUsed) * 100;
       const options = {
-        amount: order.totalAmountAfterDiscount * 100,
+        amount: amount,
         currency: "INR",
         receipt: "" + order._id,
       };
@@ -257,19 +246,20 @@ const placeOrder = async (req, res) => {
         instance.orders.create(options, async function (err, order) {
           if (err) {
             console.log(err);
-            await Order.findByIdAndUpdate(orderId, {
+            await Order.findByIdAndUpdate(order_id, {
               paymentStatus: "pending",
             });
             reject(err);
           } else {
-            await Order.findByIdAndUpdate(orderId, {
+            await Order.findByIdAndUpdate(order_id, {
               paymentStatus: "Payment Initiated",
             });
             resolve(order);
           }
         });
       });
-      await Order.findByIdAndUpdate(req.body.order_id, {
+
+      await Order.findByIdAndUpdate(order_id, {
         address: address,
       });
 
@@ -282,6 +272,8 @@ const placeOrder = async (req, res) => {
       });
     }
   } catch (error) {
+    console.log(error);
+
     if (error instanceof mongoose.Error.ValidationError) {
       return res.json({
         status: "failed",
@@ -294,6 +286,79 @@ const placeOrder = async (req, res) => {
         message: error.message,
       });
     }
+  }
+};
+
+const deductMoneyFromWallet = async (req, res) => {
+  try {
+    const { userId } = req;
+    const { orderId } = req.body;
+
+    let userWallet = await wallet.findById(userId);
+    const order = await Order.findById(orderId);
+
+    if(userWallet.balance == 0 ){
+    return res.json({ failed: true, message: "Wallet don't have balance" });
+
+    }
+    const walletCashUsed = Math.min(order.totalAmountAfterDiscount, userWallet.balance);
+
+ 
+    const Transaction = new transaction({
+      type: 'purchase',
+      amount: walletCashUsed,
+      description: `purchase of ${order.orderId}`
+    });
+
+  await wallet.findByIdAndUpdate(userId, {
+      $inc: { balance: -walletCashUsed },
+      $push: { transactions: Transaction._id }
+    });
+
+await Order.findByIdAndUpdate(orderId, {
+      walletCashUsed
+    });
+
+     userWallet = await wallet.findById(userId);
+
+
+    return res.json({ status: "Success", message: `Wallet cash used Successfully Balance : ${userWallet.balance.toFixed(2)}` ,success:true});
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ status: "Error", message: "Failed to update wallet usage" });
+  }
+};
+
+const returnMoneyToWallet = async (req, res) => {
+  try {
+    const { userId } = req;
+    const { orderId } = req.body;
+
+  
+    let userWallet = await wallet.findById(userId);
+    const order = await Order.findById(orderId);
+
+    
+    const amountToReturn = order.walletCashUsed;
+
+    
+    userWallet.balance += amountToReturn;
+
+
+    userWallet.transactions.pop();
+
+
+    order.walletCashUsed = 0;
+    await order.save();
+
+
+    await userWallet.save();
+
+    userWallet = await wallet.findById(userId);
+    return res.json({ status: "Success", message: `Money returned to wallet successfully, Balance : ${userWallet.balance.toFixed(2)}` });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ status: "Error", message: "Failed to return money to wallet" });
   }
 };
 
@@ -540,4 +605,6 @@ module.exports = {
   returnOrder,
   orderFailure,
   moveToCart,
+  returnMoneyToWallet,
+  deductMoneyFromWallet
 };

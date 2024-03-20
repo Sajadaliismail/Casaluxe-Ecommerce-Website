@@ -1,29 +1,68 @@
 function updateWallet() {
-  var checkbox = document.getElementById("useWallet");
-  var isChecked = checkbox.checked;
-  
+  let checkbox = document.getElementById("useWallet");
+  let isChecked = checkbox.checked;
+  const orderId = document.getElementById('order_id').value
   if (isChecked) {
-      deductMoneyFromWallet();
+      deductMoneyFromWallet(orderId);
   } else {
-      addMoneyToWallet();
+    returnMoneyToWallet(orderId);
   }
 }
 
-function deductMoneyFromWallet() {
-  console.log('on');
- 
-  // Perform AJAX request to deduct money from wallet
-  // Example:
-  // $.post("deduct_money.php", { amount: 10 }, function(response) {
-  //     console.log(response);
-  // });
+function deductMoneyFromWallet(val) {
+  let checkbox = document.getElementById("useWallet");
+
+  const orderId = val
+ $.ajax({
+  url:'/useWalletCash',
+  method: 'POST',
+  data : {orderId : orderId},
+  success: function(response){
+    console.log(response);
+    if(response.success){
+
+    Toast.fire({
+      icon: "success",
+      title: `${response.message}`,
+    });
+  }
+  else if(response.failed){
+      Toast.fire({
+        icon: "info",
+        title: `${response.message}`,
+      });
+    }
+
+  },
+  error : function (error){
+    Toast.fire({
+      icon: "info",
+      title: `${error.message}`,
+    });
+  }
+ })
+  
 }
 
-function addMoneyToWallet() {
+function returnMoneyToWallet(orderId) {
   console.log('off');
-  // Perform AJAX request to add money to wallet
-  // Example:
-  // $.post("add_money.php", { amount: 10 }, function(response) {
-  //     console.log(response);
-  // });
+  $.ajax({
+    url: '/returnWalletCash', 
+    method: 'POST',
+    data: { orderId: orderId },
+    success: function(response) {
+      Toast.fire({
+        icon: "success",
+        title: `${response.message}`,
+      });
+     
+    },
+    error: function(error) {
+      Toast.fire({
+        icon: "info",
+        title: `${error.message}`,
+      });
+    }
+  });
 }
+
