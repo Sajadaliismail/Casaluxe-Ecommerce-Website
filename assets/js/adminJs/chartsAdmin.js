@@ -4,8 +4,10 @@ $(document).ready(function ()  {
             url: '/admin/api/statistics',
       method: 'GET',
       success: function(response) {
+        console.log(response);
           const data = response.data
-  
+          populateTopProductsTable(response.topProducts);
+          populateTopCategoryTable(response.topCategory);
             // Process data as needed
             const totalAmounts = data.map(order => order.totalAmount);
             const totalAmountsAfterDiscount = data.map(order => order.totalAmountAfterDiscount);
@@ -23,6 +25,7 @@ $(document).ready(function ()  {
 
   }
   
+
   function renderPieChart(labels, values) {
     const ctx = document.getElementById('pieChart').getContext('2d');
     new Chart(ctx, {
@@ -500,4 +503,23 @@ let myPieChartMonthly;
     } catch (error) {
         console.error('Error rendering custom chart:', error);
     }
+  }
+
+  function populateTopProductsTable(data) {
+    const topProductsTableBody = document.getElementById('topProductsTableBody');
+    data.forEach(product => {
+      const row = document.createElement('tr');
+      row.innerHTML = `<td>${product.productName}</td><td>${product.totalQuantity}</td><td>${product.totalRevenue.toFixed(2)}</td>`;
+      topProductsTableBody.appendChild(row);
+    });
+  }
+
+  
+  function populateTopCategoryTable(data) {
+    const topCategoryTableBody = document.getElementById('topCategoryTableBody');
+    data.forEach(category => {
+      const row = document.createElement('tr');
+      row.innerHTML = `<td>${category.CategoryName}</td><td>${category.totalQuantity}</td><td>${category.totalRevenue.toFixed(2)}</td>`;
+      topCategoryTableBody.appendChild(row);
+    });
   }

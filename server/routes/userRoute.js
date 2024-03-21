@@ -83,6 +83,7 @@ route.post('/paymentfailure',verifyToken,orderController.orderFailure)
 route.post('/rating',verifyToken,shopController.rating)
 route.post('/movetocart',verifyToken,orderController.moveToCart)
 route.post('/returnorder',verifyToken,orderController.returnOrder)
+route.get('/invoice',verifyToken,userController.printInvoice)
 
 route.post('/useWalletCash', verifyToken, orderController.deductMoneyFromWallet);
 route.post('/returnWalletCash', verifyToken, orderController.returnMoneyToWallet);

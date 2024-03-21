@@ -2,6 +2,161 @@ const Order = require("../../models/orderSchema");
 
 const dailyChart = async (req, res) => {
   try {
+    Order.aggregate([
+      {
+        $unwind: "$items"
+      },
+      {
+        $lookup: {
+          from: "items",
+          localField: "items",
+          foreignField: "_id",
+          as: "item"
+        }
+      },
+      {
+        $unwind: "$item"
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "item.product",
+          foreignField: "_id",
+          as: "productdetails"
+        }
+      },
+      {
+        $unwind: "$productdetails"
+      },
+      {
+        $group: {
+          _id: "$item.product",
+          productName: { $first: "$productdetails.name" },
+          totalQuantity: { $sum: "$item.count" },
+          totalRevenue: { $sum: { $multiply: ["$item.priceAfterDiscounts", "$item.count"] } }
+
+        }
+      },
+    ]).then((data)=>{
+      console.log(data);
+    })
+    const topProducts = await Order.aggregate([
+      {
+        $unwind: "$items"
+      },
+      {
+        $lookup: {
+          from: "items",
+          localField: "items",
+          foreignField: "_id",
+          as: "item"
+        }
+      },
+      {
+        $unwind: "$item"
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "item.product",
+          foreignField: "_id",
+          as: "productdetails"
+        }
+      },
+      {
+        $unwind: "$productdetails"
+      },
+      {
+        $group: {
+          _id: "$item.product",
+          productName: { $first: "$productdetails.name" },
+          totalQuantity: { $sum: "$item.count" },
+          totalRevenue: { $sum: { $multiply: ["$item.priceAfterDiscounts", "$item.count"] } }
+        }
+      },
+      {
+        $sort: { totalQuantity: -1 }
+      },
+      {
+        $limit: 10
+      },
+      {
+        $project: {
+          _id: 0, 
+          productName: 1, 
+          totalQuantity: 1 ,
+          totalRevenue: 1
+        }
+      }
+    ]);
+      
+      
+    const topCategory = await Order.aggregate([
+      {
+        $unwind: "$items" 
+      },
+      {
+        $lookup: {
+          from: "items", 
+          localField: "items",
+          foreignField: "_id",
+          as: "item"
+        }
+      },
+      {
+        $unwind: "$item" 
+      },
+      {
+        $lookup: {
+          from: "products", 
+          localField: "item.product",
+          foreignField: "_id",
+          as: "productdetails"
+        }
+      },
+      {
+        $unwind: "$productdetails" 
+      },
+      {
+        $lookup: {
+          from: "categories", 
+          localField: "productdetails.category",
+          foreignField: "_id",
+          as: "Category"
+        }
+      },
+      {
+        $unwind: "$Category" 
+      },
+      {
+        $group: {
+          _id: "$Category._id", 
+          CategoryIdInProduct: { $first: "$productdetails.category" },
+          CategoryName: { $first: "$Category.name" },
+          CategoryId: { $first: "$Category._id" },
+          totalQuantity: { $sum: "$item.count" } ,
+          totalRevenue: { $sum: { $multiply: ["$item.priceAfterDiscounts", "$item.count"] } }
+
+        }
+      },
+      {
+        $sort: { totalQuantity: -1 } 
+      },
+      {
+        $limit: 10 
+      },
+      {
+        $project: {
+          _id: 0, 
+          CategoryIdInProduct: 1, 
+          CategoryName: 1, 
+          CategoryId: 1, 
+          totalQuantity: 1 ,
+          totalRevenue :1
+        }
+      }
+    ]);
+    
     const data = await Order.aggregate([
       {
         $match: {
@@ -38,8 +193,8 @@ const dailyChart = async (req, res) => {
       },
       { $sort: { date: 1 } }
     ]);
-console.log(data);
-    res.json({ success: true, data });
+
+    res.json({ success: true, data,topCategory,topProducts });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
