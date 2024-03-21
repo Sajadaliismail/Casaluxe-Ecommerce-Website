@@ -193,7 +193,7 @@
                             <div class="mb-3">
                               <label for="" class="form-label">Email address</label><% if (locals.messageemail) { %>
                                 <span style="color: red; margin-left: 50%;"><%= messageemail %></span><% } %>
-                              <input type="email" class="form-control" id="email" onblur="viewbutton()" aria-describedby="emailHelp" required="true" id="email" name="email">
+                              <input type="email" class="form-control" id="email" onblur="validateEmail()" aria-describedby="emailHelp" required="true" id="email" name="email">
                             
                               <div id="emailHelp" class="form-text d-flex flex-col align-items-center justify-content-end">
                                 <div class="form-text d-flex flex-col  align-items-center">
