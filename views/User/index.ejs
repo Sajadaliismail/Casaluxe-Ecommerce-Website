@@ -99,12 +99,25 @@
     <div class="section section-padding">
         <div class="shop-sort">
                <h2 class="text-center mb-5">Shop by category </h2>
-            <ul class="list-unstyled list-group list-group-horizontal gap-3  justify-content-around">
-     
-                <% for( let index = 0; index < categories.length; index++ ) { %> <li class=""><a class="font-weight-bold text-primary text-hover-success mb-0" href="/category/<%= categories[index]._id %>"><h4 class="mb-3 fw-light" data-animate="fadeInUp"><%= categories[index].name %></h4></a></li>
-                <% } %> </ul></nav></div>
-               
-         </ul>        
+               <div class="container-fluid">
+                <div class="row">
+                    <div class="col">
+                        <div class="overflow-auto">
+                            <ul class="list-unstyled d-flex justify-content-around">
+                                <% for (let index = 0; index < categories.length; index++) { %>
+                                <li class="me-3 text-nowrap"> <!-- Adjust the margin as needed -->
+                                    <a class="font-weight-bold text-primary text-hover-success mb-0" href="/category/<%= categories[index]._id %>">
+                                        <h4 class="mb-3 fw-light" data-animate="fadeInUp" style="overflow: hidden;"><%= categories[index].name %></h4>
+                                    </a>
+                                </li>
+                                <% } %>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+                
                 </div>
         <div class="container">
             <!-- Product Section Wrapper Start -->
@@ -221,12 +234,24 @@
             <div class="swiper-container">
                 <div class="shop-sort">
                     <h2 class="text-center mb-5">Shop by roomtype </h2>
-                 <ul class="list-unstyled list-group list-group-horizontal gap-3  justify-content-around">
-          
-                     <% for( let index = 0; index < roomtype.length; index++ ) { %> <li class=""><a class="font-weight-bold text-primary text-hover-success mb-0" href="/roomtype/<%= roomtype[index]._id %>"><h4 class="mb-3 fw-light" data-animate="fadeInUp"><%= roomtype[index].name %></h4></a></li>
-                     <% } %> </ul></nav></div>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col">
+                                <div class="overflow-auto">
+                                    <ul class="list-unstyled list-group list-group-horizontal gap-3 justify-content-around">
+                                        <% for (let index = 0; index < roomtype.length; index++) { %>
+                                        <li class="col-lg-auto col-md-6 col-sm-12">
+                                            <a class="font-weight-bold text-primary text-hover-success mb-0 text-nowrap" href="/roomtype/<%= roomtype[index]._id %>">
+                                                <h4 class="mb-3 fw-light" data-animate="fadeInUp"><%= roomtype[index].name %></h4>
+                                            </a>
+                                        </li>
+                                        <% } %>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     
-              </ul>        
                      </div>
             </div>
         </div>

@@ -87,99 +87,150 @@
                         <div class="tab-pane fade" id="pills-order">
                             <div class="my-account-order account-wrapper">
                                 <h4 class="account-title">Orders</h4>
-                                <table class="table table-striped table-bordered table-hover">
-                                    <% for( let index=0; index < order.length; index++ ) { %>
-                                        <tr id="row1">
-                                            <td>
-                                                <details>
-                                                    <summary class="btn"><i class="fa-solid fa-caret-right"></i> Order Id : <%= order[index].orderId %> | <%= order[index].orderdate.toLocaleDateString() %></span> |<span class="mx-2"> Status : <%= order[index].orderStatus
-                                                        %>
-                                                    </summary>
-                                                    <table class="table table-hover">
-                                                        <tr>
-                                                            <th>Image</th>
-                                                            <th>Product</th>
-                                                            <th>Quantity</th>
-                                                            <th>Price</th>
-                                                            <% if (order[index].orderStatus === 'delivered') { %>
-                                                                <th>Rating</th> <% } %>
-                                                                       
-                                                        </tr>
-                                                        <tr>
-                                                            <% order[index].items.forEach(item=> { %>
-                                                        <tr>
-                                                            <td><a href="/product/<%= item.product._id %>"><img width="50px" height="50px" class="img img-thumbnail"
-                                                                    src="/imgs/uploads/<%= item.product.image[0] %>" alt=""></a></td>
-                                                            <td><a href="/product/<%= item.product._id %>">
-                                                                <%= item.product.name %></a>
-                                                            </td>
-                                                            <td>
-                                                                <%= item.count %>
-                                                            </td>
-                                                            <td>
-                                                                <%= item.priceAfterDiscounts.toFixed(2) * item.count %>
-                                                            </td>
-                                                            
-                                                                <td>
-                                                                    <% if (order[index].orderStatus === 'delivered') { %>
-                                                                     
-                                                                  
-                                                                    <div class="productRating" data-item-id="<%= item._id %>" data-rating="<%= item.rating !== undefined ? item.rating : 0 %>">
-                                                                        <% } %>
-                                                                </div></td>
-                                                           
-                                                            
-                                                        </tr>
-                                                        
-                                                        <% }); %>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td><span class="fw-bold">Order value : <%= Number(order[index].totalAmountAfterDiscount).toFixed(2) %></span></td>
-                                            <td>
-                                                <%= order[index].items.length %> items.
-                                            </td>
-                                            <td>
-                                                <% if (order[index].orderStatus !== 'canceled' && order[index].orderStatus !== 'delivered' && order[index].orderStatus !== 'returned') { %>
-                                                    <button type="button" onclick="cancelorder('<%= order[index]._id %>','<%= index %>')" id="cancel<%= index %>" class="" style="background-color: #dc3545; color: #fff; font-size: 14px; border: none; padding: 8px 16px; border-radius: 4px;">Cancel order</button>
-                                                <% } %>
-                                                <% if (order[index].orderStatus === 'delivered') { %>
-                                                    <button type="button" onclick="returnOrder('<%= order[index]._id %>','<%= index %>')" id="returnBtn<%= index %>" class="" style="background-color: #ffc107; color: #000; font-size: 14px; border: none; padding: 8px 16px; border-radius: 4px;">Return order</button>
-                                                <% } %>
-                                                </td>
-                                                <% if (order[index].shippingStatus !== 'pending') { %>
-                                                    <tr>
-                                                        <td style="text-transform: capitalize;" colspan="4">
-                                                            Shipping status: <%= order[index].shippingStatus %>
-                                                        </td>
-                                                    </tr>
-                                                <% } %>
-                                                <% if (order[index].orderStatus === 'canceled') { %>
-                                                    <button type="button" disabled style="background-color: #696969; color: #fff; font-size: 14px; border: none; padding: 8px 16px; border-radius: 4px;">Order Canceled</button>
-                                                </td>
-                                                </tr>
-                                                <% } %>
-                                                <% if (order[index].orderStatus === 'returned') { %>
-                                                    <button type="button" disabled style="background-color: #696969; color: #fff; font-size: 14px; border: none; padding: 8px 16px; border-radius: 4px;">Order returned</button>
-                                                </td>
-                                                </tr>
-                                                <% } %>
-                                                <% if (order[index].orderStatus !== 'canceled' && order[index].orderStatus !== 'returned' && order[index].orderStatus !== 'pending') { %>
-                                                    <a type="button" href="/invoice?id=<%= order[index]._id %>" style="background-color: #0f741e; color: #fff; font-size: 14px; border: none; padding: 8px 16px; border-radius: 4px;">Download Invoice</a>
-                                                </td>
-                                                </tr>
-                                                <% } %>
-                                       
-                                       
-                                              
+                                <% for( let index=0; index < order.length; index++ ) { %>
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                Order Id : <%= order[index].orderId %> | <%= order[index].orderdate.toLocaleDateString() %> | Status : <%= order[index].orderStatus %>
+                                            </h5>
+                                            <% order[index].items.forEach(item=> { %>
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <div class="product-details">
+                                                        <a href="/product/<%= item.product._id %>">
+                                                            <img width="50px" height="50px" class="img img-thumbnail" src="/imgs/uploads/<%= item.product.image[0] %>" alt="">
+                                                            <%= item.product.name %>
+                                                        </a>
+                                                    </div>
+                                                    <% if (order[index].orderStatus === 'delivered') { %>
+                                                        <div class="productRating" data-item-id="<%= item._id %>" data-rating="<%= item.rating !== undefined ? item.rating : 0 %>">
+                                                        </div>
+                                                    <% } %>
+                                                    <div class="quantity-price">
+                                                        <span>Quantity: <%= item.count %></span>
+                                                        <span>Price: <%= (item.priceAfterDiscounts * item.count).toFixed(2) %></span>
+                                                    </div>
+                                                  
+                                                </div>
+                                            <% }); %>
+                                            <% if (order[index].orderStatus === 'canceled' || order[index].orderStatus === 'returned') { %>
+                                                <button style="background-color: #686868; color: #fff; font-size: 14px; border: none; padding: 8px 16px; border-radius: 4px;" type="button" class=" " disabled>Order <%= order[index].orderStatus %></button>
+            
+                                            <% } %>
+                                            <% if (order[index].orderStatus !== 'canceled' && order[index].orderStatus !== 'returned' && order[index].orderStatus !== 'pending') { %>
+                                                <a type="button" href="/invoice?id=<%= order[index]._id %>" style="background-color: #0f741e; color: #fff; font-size: 14px; border: none; padding: 8px 16px; border-radius: 4px;">Download Invoice</a>
+                                            <% } %>
+                                            <% if (order[index].orderStatus !== 'canceled' && order[index].orderStatus !== 'delivered' && order[index].orderStatus !== 'returned') { %>
+                                                <button type="button" onclick="cancelorder('<%= order[index]._id %>','<%= index %>')" id="cancel<%= index %>" class="" style="background-color: #dc3545; color: #fff; font-size: 14px; border: none; padding: 8px 16px; border-radius: 4px;">Cancel order</button>
+                                            <% } %>
+
+                                            <button type="button" class="place-order" data-bs-toggle="modal" data-bs-target="#orderModal<%= index %>">View Details</button>
+                                        </div>
+                                    </div>
                                 
-                                </table>
-                                </details>
-                                </td>
-                                </td>
-                                </tr>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="orderModal<%= index %>" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel<%= index %>" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="orderModalLabel<%= index %>">Order Details</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                       
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                              
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th width="40%">Product</th>
+                                                                <th width="20%">Unit Price</th>
+                                                                <th width="20%">Quantity</th>
+                                                                <th width="20%" class="text-end">Total</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <% order[index].items.forEach(item=> { %>
+                                                                <tr>
+                                                                    <td>
+                                                                        <div class="d-flex flex-row gap-3"> <div class="">
+                                                                        <a class="itemside" href="/product/<%= item.product._id %>">
+                                                                           
+                                                                                <img src="/imgs/uploads/<%= item.product.image[0]  %>" width="40" height="40" class="img-xs" alt="Item">
+                                                                            </div>
+                                                                            <div class="info"><%= item.product.name %>
+
+                                                                        </a></div>
+                                                                        <% if (order[index].orderStatus === 'delivered') { %>
+                                                                            <div class="productRating" data-item-id="<%= item._id %>" data-rating="<%= item.rating !== undefined ? item.rating : 0 %>">
+                                                                            </div>
+                                                                        <% } %>
+                                                                    </div>
+                                                                    </td>
+                                                                    <td> <%= item.product.price.toFixed(2) %> </td>
+                                                                    <td> <%= item.count %> </td>
+                                                                    <td class="text-end"><%= (item.productPrice *  item.count).toFixed(2) %> </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td>Offer discount</td>
+                                                                    <td class="text-end"><%= (item.offerPriceReduction *  item.count).toFixed(2) %> </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td>Coupon discount: </td>
+                                                                    <td class="text-end"><%= (item.couponDiscountReduction *  item.count).toFixed(2) %> </td>
+                                                                </tr>
+                                                                <% }); %>
+                                            
+                                                                <td colspan="4">
+                                                                    <article class="float-end">
+                                                                        <dl class="dlist">
+                                                                            <dt>Subtotal:</dt>
+                                                                            <dd><%= order[index].totalAmountAfterDiscount.toFixed(2) %></dd>
+                                                                        </dl>
+                                                                        <!-- <dl class="dlist">
+                                                                            <dt>Shipping cost:</dt>
+                                                                            <dd>$10.00</dd>
+                                                                        </dl> -->
+                                                                        <dl class="dlist">
+                                                                            <dt>Total after discount:</dt>
+                                                                            <dd> <b class="h5"><%= order[index].totalAmountAfterDiscount.toFixed(2) %></b> </dd>
+                                                                        </dl>
+                                                                        <dl class="dlist">
+                                                                            <dt class="text-muted">Status:</dt>
+                                                                            <dd>
+                                                                                <span class="badge rounded-pill alert-success text-success"><%= order[index].PaymentStatus %></span>
+                                                                            </dd>
+                                                                        </dl>
+                                                                    </article>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div> 
+                                                     
+                                            </div>
+                                                <div class="modal-footer">
+                                                    <% if (order[index].orderStatus === 'canceled' || order[index].orderStatus === 'returned') { %>
+                                                        <button  class="btn btn-dark" disabled>Order <%= order[index].orderStatus %></button>
+                    
+                                                    <% } %>
+                                                    <% if (order[index].orderStatus !== 'canceled' && order[index].orderStatus !== 'returned' && order[index].orderStatus !== 'pending') { %>
+                                                        <a type="button" href="/invoice?id=<%= order[index]._id %>" class="btn btn-success">Download Invoice</a>
+                                                    <% } %>
+                                                    <% if (order[index].orderStatus !== 'canceled' && order[index].orderStatus !== 'delivered' && order[index].orderStatus !== 'returned') { %>
+                                                        <button type="button" onclick="cancelorder('<%= order[index]._id %>','<%= index %>')" id="cancel<%= index %>" class="btn btn-danger ">Cancel order</button>
+                                                    <% } %>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 <% } %>
-                                    </table>
+                                                                
                             </div>
                         </div>
 

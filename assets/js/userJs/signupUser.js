@@ -310,18 +310,18 @@ $(document).ready(function() {
 
   function validateEmail() {
     const emailInput = document.getElementById('email');
-    // const submitButton = document.getElementById('submitButton');
+    
 
-    // Regular expression for validating email format
+    
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    // Check if the email input value matches the email pattern
+    
     if (emailPattern.test(emailInput.value)) {
-        // If the email format is valid, display the submit button
+       
         document.getElementById("collapse").style.display = "block";
 
     } else {
-        // If the email format is invalid, hide the submit button
+       
         document.getElementById("collapse").style.display = "none";
 
     }

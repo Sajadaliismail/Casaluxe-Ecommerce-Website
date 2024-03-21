@@ -184,10 +184,54 @@
                                     <li><a href="/logout">Logout</a></li>
                                 </ul>
                             </div>
-                            <a class="action" href="/cart">
-                                <i class="pe-7s-shopbag"></i>
-                                <span class="number">3</span>
-                            </a>
+                            <div class="dropdown">
+                                <a onclick="getcartdata()" id="getcartbutton" id="carticon" class="action" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="pe-7s-shopbag"></i>
+                                   
+                                    <span id="cartItemNumber"  class="number"><%= cart.products.length %></span>
+                                </a>
+    
+                                <div class="dropdown-menu dropdown-cart rounded">
+                                    <div class="cart-content rounded" id="cart-content">
+                                        <ul id="cartIconUl">
+    
+                                        </ul>
+                                    </div>
+                                    <div id="noItemsDiv" class="align-content-center text-center">
+                                        <div class="empty-cart-title">
+                                            There are no more items in your cart
+                                        </div>
+                                        <div class="efmpty-cart-img">
+                                            <img height="20px" width="20px" src="/imgs/images/cart.png" alt="Cart" />
+                                        </div>
+                                        <p>Your cart is currently empty!</p>
+                                        <a href="/shop" class=" btn-success p-2"><i class="fa fa-angle-left"></i> Continue
+                                            browsing</a>
+                                    </div>
+    
+                                    <div id="cartPriceDiv" style="display: none;" class="cart-price">
+                                        <div class="cart-subtotals">
+                                            <div class="price-inline">
+                                                <span class="label">Subtotal</span>
+                                                <span id="subtotal" class="value"></span>
+                                            </div>
+                                            <div class="price-inline">
+                                                <span class="label">Discount</span>
+                                                <span id="discountsTotal" class="value"></span>
+                                            </div>
+                                        </div>
+                                        <div id="cartTotal">
+                                            <div class="price-inline">
+                                                <span class="label">Total</span>
+                                                <span id="totalprice" class="value"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="checkoutButton" style="display: none;" class="checkout-btn">
+                                        <a href="/cart" class="btn btn-dark btn-hover-primary d-block">Go to cart</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <!-- Header Action End -->
                     </div>
@@ -202,8 +246,11 @@
                 <!-- Header Search Start -->
                 <div class="header-search">
                     <form action="#">
-                        <input type="text" placeholder="Enter your search key ... " />
+                        <input id="searchnput" oninput="search(this.value)" type="text" placeholder="Enter your search key ... " />
+
                         <button><i class="pe-7s-search"></i></button>
+                        <ul class="list-group" id="SearchResults">
+                        </ul>
                     </form>
                 </div>
                 <!-- Header Search End -->
@@ -219,9 +266,9 @@
             <!-- Canvas Action Start -->    
             <div class="canvas-action">
                 <a class="action" href="/cart"><i class="icon-sliders"></i> Cart
-                    <span class="action-num">(3)</span></a>
+                    <span class="action-num"></span></a>
                 <a class="action" href="/wishlist"><i class="icon-heart"></i> Wishlist
-                    <span class="action-num">(3)</span></a>
+                    <span class="action-num"></span></a>
             </div>
             <!-- Canvas Action end -->
 
