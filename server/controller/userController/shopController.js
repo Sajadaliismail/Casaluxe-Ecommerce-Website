@@ -49,9 +49,6 @@ const shopSortingPage = async (req, res) => {
   const price = req.query.price; 
 
   try {
-
-
-
     const id = req.userId;
     const sortTerm = req.params.id;
     let linkTerm = req.params.id;
@@ -267,7 +264,7 @@ if(items){
   }
   } catch (error) {
     console.log(error);
-    // res.status(500).send("Internal Server Error");
+    
     res.redirect('/')
   }
 };

@@ -96,8 +96,8 @@
     <!-- Banner Section End -->
     
     <!-- New Product Section Start -->
-    <div class="section section-padding">
-        <div class="shop-sort">
+  
+        
                <h2 class="text-center mb-5">Shop by category </h2>
                <div class="container-fluid">
                 <div class="row">
@@ -105,8 +105,8 @@
                         <div class="overflow-auto">
                             <ul class="list-unstyled d-flex justify-content-around">
                                 <% for (let index = 0; index < categories.length; index++) { %>
-                                <li class="me-3 text-nowrap"> <!-- Adjust the margin as needed -->
-                                    <a class="font-weight-bold text-primary text-hover-success mb-0" href="/category/<%= categories[index]._id %>">
+                                <li class="me-3 text-nowrap"> 
+                                    <a class="font-weight-bold text-primary text-hover-success" href="/category/<%= categories[index]._id %>">
                                         <h4 class="mb-3 fw-light" data-animate="fadeInUp" style="overflow: hidden;"><%= categories[index].name %></h4>
                                     </a>
                                 </li>
@@ -116,9 +116,9 @@
                     </div>
                 </div>
             </div>
-            
+            <div class="section section-padding">
                 
-                </div>
+             
         <div class="container">
             <!-- Product Section Wrapper Start -->
             <div class="product-section-wrapper">
@@ -169,7 +169,7 @@
                                                 <div class="swiper-slide">
                                                     <!-- Single Product Start -->
                                                         <div class="single-product">
-                                                            <% if (productdata[index].stock<10) { %>
+                                                            <% if (productdata[index].stock<10 && productdata[index].stock!== 0  ) { %>
                                                                 <span  class="stock-tag">Only <%= productdata[index].stock %> left !!</span>
                                                             <% } %>
                                                             <% const productDate = new Date(productdata[index].date); %>
@@ -278,7 +278,7 @@
 
                                         <div class="single-product">
                                             <a href="#"> 
-                                            <% if (productdata[index].stock<5) { %>
+                                            <% if (productdata[index].stock<10 && productdata[index].stock!== 0 ) { %>
                                                 <span  class="stock-tag">Only <%= productdata[index].stock %> left !!</span>
                                             <% } %>
                                             <% const productDate = new Date(productdata[index].date); %>

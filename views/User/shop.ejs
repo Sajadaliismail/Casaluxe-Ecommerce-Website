@@ -69,7 +69,7 @@
                                   
                                     <div class="single-product">
                                         <a href="/product/<%= item.id %>">
-                                            <% if (item.stock<10) { %>
+                                            <% if (item.stock<10 && item.stock!==0 ) { %>
                                                 <span  class="stock-tag">Only <%= item.stock %> left !!</span>
                                             <% } %>
                                             <% const productDate = new Date(item.date); %>

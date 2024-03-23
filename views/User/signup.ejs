@@ -2,11 +2,10 @@
 <html lang="en">
 
 
-<!-- Mirrored from htmldemo.net/furbar-1/furbar/register.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 11 Feb 2024 10:15:36 GMT -->
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
-    <title>Furbar - Furniture eCommerce Bootstrap 5 Template</title>
+    <title>Casaluxe</title>
     <meta name="robots" content="noindex, follow" />
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -148,9 +147,11 @@
                                 <span style="color: red; margin-left: 40%;"><%= messagephn %></span><% } %>
                               <input type="number"  class="form-control"  id="phone" aria-describedby="emailHelp" maxlength="10" required="true"  name="phone">
                                 <div  class="mb-3">
-                                    <label for="password" class="form-label">Password</label><% if (locals.resultpassword) { %>
+                                    <label for="password" class="form-label">Password :</label><% if (locals.resultpassword) { %>
                                       <span style="color: red; margin-left: 40%;"><%= resultpassword %></span><% } %>
                                     <input oninput="isstrong(this.value)" type="password" required="true" class="form-control" id="password" name="password" minlength="8">
+                                    <small class="text-muted" style="font-size: 10px;">Password should contain at least 8 characters, including special characters, uppercase, and lowercase letters.</small><br>
+
                                     <span class="message" id="strong-password">
                                   </div>
                                   <div class="mb-3">
@@ -268,5 +269,4 @@
 </body>
 
 
-<!-- Mirrored from htmldemo.net/furbar-1/furbar/register.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 11 Feb 2024 10:15:36 GMT -->
 </html>
