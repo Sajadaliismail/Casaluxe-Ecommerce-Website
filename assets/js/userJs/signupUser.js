@@ -313,7 +313,8 @@ $(document).ready(function() {
     
 
     
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailPattern = /^[^\s@]+@(gmail|yahoo|hotmail|outlook|aol|icloud|protonmail|mail|yandex|zoho)+\.(com|org|net|edu|gov|mil|biz|info|name|coop|aero|eu|int|pro|museum|arpa|[a-z]{2})$/;
+
 
     
     if (emailPattern.test(emailInput.value)) {

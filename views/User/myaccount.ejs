@@ -90,8 +90,8 @@
                                 <% for( let index=0; index < order.length; index++ ) { %>
                                     <div class="card mb-3">
                                         <div class="card-body">
-                                            <h5 class="card-title">
-                                                Order Id : <%= order[index].orderId %> | <%= order[index].orderdate.toLocaleDateString() %> | Status : <%= order[index].orderStatus %>
+                                            <h5 class="card-title text-uppercase">
+                                                Order Id : <%= order[index].orderId %> | <%= order[index].orderdate.toLocaleDateString() %> | Status : <%= order[index].orderStatus %> | Payment status : <%= order[index].paymentStatus %> 
                                             </h5>
                                             <% order[index].items.forEach(item=> { %>
                                                 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -107,11 +107,24 @@
                                                     <% } %>
                                                     <div class="quantity-price">
                                                         <span>Quantity: <%= item.count %></span>
-                                                        <span>Price: <%= (item.priceAfterDiscounts * item.count).toFixed(2) %></span>
+                                                        <span>Price: <strike class="text-muted small"> <%= (item.productPrice * item.count).toFixed(2) %> </strike> </span>
+                                                        <span><%= (item.priceAfterDiscounts * item.count).toFixed(2) %></span>
                                                     </div>
                                                   
                                                 </div>
                                             <% }); %>
+                                            <article class="float-end">
+                                                <dl class="dlisdt">
+                                                    <dd>Total:
+                                                    <strike class="text-muted small"><%= order[index].totalAmount.toFixed(2) %></strike>
+                                                    <b class=""><%= order[index].totalAmountAfterDiscount.toFixed(2) %></b> </dd>
+
+                                                </dl>
+                                               
+                                                </article>
+                                            <% if (order[index].paymentStatus === 'pending' && order[index].status !== 'canceled' ) { %>
+                                                <a type="button" onclick="makePayment('<%= order[index]._id %>')" style="background-color: #0f741e; color: #fff; font-size: 14px; border: none; padding: 8px 16px; border-radius: 4px;">Pay now</a>
+                                            <% } %>
                                             <% if (order[index].orderStatus === 'canceled' || order[index].orderStatus === 'returned') { %>
                                                 <button style="background-color: #686868; color: #fff; font-size: 14px; border: none; padding: 8px 16px; border-radius: 4px;" type="button" class=" " disabled>Order <%= order[index].orderStatus %></button>
             
@@ -122,6 +135,7 @@
                                             <% if (order[index].orderStatus !== 'canceled' && order[index].orderStatus !== 'delivered' && order[index].orderStatus !== 'returned') { %>
                                                 <button type="button" onclick="cancelorder('<%= order[index]._id %>','<%= index %>')" id="cancel<%= index %>" class="" style="background-color: #dc3545; color: #fff; font-size: 14px; border: none; padding: 8px 16px; border-radius: 4px;">Cancel order</button>
                                             <% } %>
+                                            
 
                                             <button type="button" class="place-order" data-bs-toggle="modal" data-bs-target="#orderModal<%= index %>">View Details</button>
                                         </div>
@@ -138,7 +152,9 @@
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                              
+                                                    <h4 class="card-title text-uppercase">
+                                                        Order Id : <%= order[index].orderId %> | <%= order[index].orderdate.toLocaleDateString() %> | Status : <%= order[index].orderStatus %> | Payment status : <%= order[index].paymentStatus %> 
+                                                    </h4>
                                                 <div class="table-responsive">
                                                     <table class="table">
                                                         <thead>
@@ -214,6 +230,9 @@
                                                      
                                             </div>
                                                 <div class="modal-footer">
+                                                    <% if (order[index].paymentStatus === 'pending' ) { %>
+                                                        <a type="button" onclick="makePayment('<%= order[index]._id %>')" class="btn btn-success">Pay now</a>
+                                                    <% } %>
                                                     <% if (order[index].orderStatus === 'canceled' || order[index].orderStatus === 'returned') { %>
                                                         <button  class="btn btn-dark" disabled>Order <%= order[index].orderStatus %></button>
                     
@@ -237,10 +256,19 @@
                         <div class="tab-pane fade" id="pills-download">
                             <div class="my-account-download account-wrapper">
                                 <h4 class="account-title">Wallet</h4>
+                                
                                 <div id="wallet-data">
+                 <div class="d-flex justify-content-between">    
+                    <div>              
   <p><b></b> <span id="wallet-address"></span></p>
   <p><b>Account Balance: <%= Wallet.balance.toFixed(2) %></b> <span id="account-balance"></span></p>
   <p><b>Transaction History:</b></p>
+</div><div>  <button type="button" class="btn btn-primary btn-hover-success" data-bs-toggle="modal" data-bs-target="#walletModal">
+    Add Money to Wallet
+  </button>
+</div>
+
+</div>
   <div class="table-responsive">
     <table class="table table-bordered">
         <thead>
@@ -256,7 +284,7 @@
                 <tr>
                     <td><%= Wallet.transactions[i].type.toUpperCase() %></td>
                     <td><%= Wallet.transactions[i].description %></td>
-                    <td><%= Wallet.transactions[i].amount %></td>
+                    <td class="text-end"><%= Wallet.transactions[i].amount.toFixed(2) %></td>
                     <td><%= Wallet.transactions[i].timestamp.toLocaleDateString() %></td>
                 </tr>
             <% } %>
@@ -266,6 +294,29 @@
 
 </div>
                                 </div>
+                                <div class="modal fade" id="walletModal" tabindex="-1" aria-labelledby="walletModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-sm">
+                                      <div class="modal-content">
+                                        <div class="modal-header">
+                                          <h1 class="modal-title fs-5" >Add Money to Wallet</h1>
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                          <!-- Form for adding money -->
+                                          <form>
+                                            <div class="mb-3">
+                                              <label for="amount" class="form-label">Amount:</label>
+                                              <input type="number" min="50" class="form-control" id="amount" placeholder="Enter amount">
+                                            </div>
+                                          </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                          <button type="button" class="btn btn-primary" onclick="addMoney()">Make Payment</button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
                             </div>
                        
 

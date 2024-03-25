@@ -80,6 +80,7 @@ route.post("/placeorder", verifyToken, orderController.placeOrder);
 route.post('/cancelorder', verifyToken, orderController.cancelOrder);
 route.get('/ordersuccess',verifyToken,orderController.orderSuccess)
 route.post('/paymentfailure',verifyToken,orderController.orderFailure)
+route.post('/retrypayment',verifyToken,orderController.retryPayment)
 route.post('/rating',verifyToken,shopController.rating)
 route.post('/movetocart',verifyToken,orderController.moveToCart)
 route.post('/returnorder',verifyToken,orderController.returnOrder)
@@ -87,11 +88,14 @@ route.get('/invoice',verifyToken,userController.printInvoice)
 
 route.post('/useWalletCash', verifyToken, orderController.deductMoneyFromWallet);
 route.post('/returnWalletCash', verifyToken, orderController.returnMoneyToWallet);
+route.post('/addmoneytowallet',verifyToken,userController.addMoneyToWallet)
 
 route.post('/api/applycoupon',verifyToken,orderController.applyCoupon)
 route.post('/api/removecoupon',verifyToken,orderController.removeCoupon)
 
 route.post('/payment/success',verifyToken,orderController.verifyPayment)
+route.post('/wallet/success',verifyToken,userController.verifyPayment)
+
 
 // Wishlist 
 route.get("/wishlist", verifyToken, userController.wishList);

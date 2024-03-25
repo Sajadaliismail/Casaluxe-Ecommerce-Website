@@ -1064,6 +1064,9 @@ blockquote .blockquote-name::before {
   width: calc(100% - 30px);
   max-width: 64rem;
 }
+.modal-dialog.modal-sm {
+  max-width: 450px; }
+  
 @media only screen and (min-width: 768px) and (max-width: 991px) {
   .modal .modal-dialog {
     max-width: 45rem;

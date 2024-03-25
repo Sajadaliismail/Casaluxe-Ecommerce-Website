@@ -1,6 +1,8 @@
 const { user } = require("../../models/userSchema");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
+const Razorpay = require("razorpay");
+const crypto = require("crypto");
 const { MongoError } = require("mongodb");
 const { cartSchema, wishlistSchema, item } = require("../../models/cartSchema");
 const Order = require("../../models/orderSchema");
@@ -503,7 +505,7 @@ const printInvoice = async (req, res) => {
   console.log(req.query);
       try {
   
-        const orderId = req.query.id|| "65f17f732e58712b19c3d8f0"
+        const orderId = req.query.id
        
         const orderData = await Order.findById(orderId).populate({
           path: 'items',
@@ -532,6 +534,96 @@ const printInvoice = async (req, res) => {
   }
   }
 
+  const addMoneyToWallet = async (req,res) =>{
+    try {
+      const { amount } = req.body; 
+      const id = req.userId
+
+      const userdata = await user.findById(id);
+      const Transaction = new transaction({
+        userId: userdata._id,
+        amount: amount,
+        type : 'deposit',
+        description: 'Money added to wallet'
+      })
+      await Transaction.save()
+     
+      const instance = new Razorpay({
+        key_id: process.env.KEY_ID,
+        key_secret: process.env.KEY_SECRET,
+      });
+  
+      const amountInPaise = Number(amount) * 100;
+      const options = {
+        amount: amountInPaise,
+        currency: "INR",
+        receipt: ""+Transaction._id, 
+      };
+  console.log(options);
+     
+      const razorpayOrder = await new Promise((resolve, reject) => {
+        instance.orders.create(options, async (err, order) => {
+          if (err) {
+            console.error(err);
+            reject(err);
+          } else {
+           
+            resolve(order);
+          }
+        });
+      });
+      console.log(razorpayOrder);
+      return res.json({
+        status: "Success",
+        message: razorpayOrder,
+        user: userdata,
+        Transaction,
+        success:true
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ status: "Error", message: "Internal Server Error" });
+    }
+  
+  }
+
+  function hmac_sha256(data, key) {
+    return crypto.createHmac("sha256", key).update(data).digest("hex");
+  }
+
+  const verifyPayment = async (req, res) => {
+    const { amount, transaction, payment_id, order_id, signature } = req.body;
+    console.log(req.body);
+    const userId = req.userId;
+
+    try {
+      const secret = process.env.KEY_SECRET;
+      console.log(secret);
+      const generated_signature = hmac_sha256(
+        order_id + "|" + payment_id,
+        secret
+      );
+  
+      if (generated_signature === signature) {
+    const Wallet = await wallet.findById(userId)
+    Wallet.transactions.push(transaction)
+    Wallet.balance += Number(amount)
+    await Wallet.save()
+        res.json({ success: true, message: 'success' });
+      } else {
+        
+        console.error("Invalid payment signature");
+        res
+          .status(400)
+          .json({ success: false, error: "Invalid payment signature" });
+      }
+    } catch (error) {
+    
+      console.error("Error handling payment success:", error);
+      res.status(500).json({ success: false, error: error.message });
+    }
+  };  
+
 const errorPage = (req, res) => {
   res.render("User/page-error", { error: "404" });
 };
@@ -551,5 +643,7 @@ module.exports = {
   addToWishlist,
   removeItemWishlist,
   updateDetails,
-  printInvoice
+  printInvoice,
+  addMoneyToWallet,
+  verifyPayment
 };

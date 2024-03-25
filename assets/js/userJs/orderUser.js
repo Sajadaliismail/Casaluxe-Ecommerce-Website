@@ -209,11 +209,13 @@ $(document).ready(function () {
                 },
                 success: function (data) {
                   if (data.success) {
-                    window.location.href = `/ordersuccess?orderid=${data.message}`;
                     Toast.fire({
                       icon: "Success",
-                      title: "payment success",
-                    });
+                      title: "Payment success",
+                    }).then(()=>{
+                      window.location.href = `/ordersuccess?orderid=${data.message}`;
+
+                    })
                   }
                 },
                 error: function (xhr, status, error) {
@@ -228,14 +230,17 @@ $(document).ready(function () {
                   method: "POST",
                   data: {
                     payment : 'failed',
-                    orderId: orderId
+                    orderId: orderId,
+                confirmed : false
+
                   },
                   success: function (data) {
+                  
                     if (data.success) {
 
                       Toast.fire({
                         icon: "info",
-                        title: "payment cancelled",
+                        title: "Payment cancelled",
                       });
                     }
                   },
@@ -259,35 +264,35 @@ $(document).ready(function () {
           };
           var rzp1 = new Razorpay(options);
           rzp1.on("payment.failed", function (response) {
+           console.log(response)
            
-            // alert(response.error.code);
+
+            alert(response.error.code);
             alert(response.error.description);
-            // alert(response.error.source);
-            // alert(response.error.step);
-            // alert(response.error.reason);
-            // alert(response.error.metadata.order_id);
-            // alert(response.error.metadata.payment_id);
+            
             $.ajax({
               url: "/paymentfailure",
               method: "POST",
               data: {
                 payment : 'failed',
-                orderId: orderId
+                orderId: orderId,
+                confirmed : true
               },
               success: function (data) {
+                console.log(data);
                 if (data.success) {
                   
                   Toast.fire({
                     icon: "info",
                     title: "payment failed",
                   });
+                  window.location.href = `/ordersuccess?orderid=${data.order.orderId}`;
                 }
               },
               error: function (xhr, status, error) {
                 console.error(error);
               },
             });
-          
           });
           rzp1.open();
           console.log(response);
@@ -394,4 +399,133 @@ if(response.success){
 
     }
   })
+}
+
+function makePayment(params){
+const order_id = params
+console.log(order_id);
+  $.ajax({
+    url: "/retrypayment",
+    method: "POST",
+    data : {order_id},
+    success: function (response){
+      console.log(response)
+
+      const order = response.message;
+          const user = response.user;
+          const orderId = response.orderId;
+
+      var options = {
+        key: "rzp_test_N10HdSb3UEKLbM",
+        amount: order.amount,
+        currency: "INR",
+        name: "Casaluxe",
+        description: "Test Transaction",
+        image: "/imgs/images/logo.png",
+        order_id: order.id,
+        handler: function (response) {
+          $.ajax({
+            url: "/payment/success",
+            method: "POST",
+            data: {
+              orderId: orderId,
+              payment_id: response.razorpay_payment_id,
+              order_id: response.razorpay_order_id,
+              signature: response.razorpay_signature,
+            },
+            success: function (data) {
+       console.log(data)
+
+              if (data.success) {
+                // window.location.href = `/ordersuccess?orderid=${data.message}`;
+                Toast.fire({
+                  icon: "Success",
+                  title: "payment success",
+                });
+              }
+            },
+            error: function (xhr, status, error) {
+              console.error(error);
+            },
+          });
+        },
+        modal: {
+          ondismiss: function(){
+            $.ajax({
+              url: "/paymentfailure",
+              method: "POST",
+              data: {
+                payment : 'failed',
+                orderId: orderId,
+            confirmed : false
+    
+              },
+              success: function (data) {
+              
+                if (data.success) {
+    
+                  Toast.fire({
+                    icon: "info",
+                    title: "payment cancelled",
+                  });
+                }
+              },
+              error: function (xhr, status, error) {
+                console.error(error);
+              },
+            });
+           }
+      },
+        prefill: {
+          name: user.name,
+          email: user.email,
+          contact: user.phone,
+        },
+        notes: {
+          address: "Razorpay Corporate Office",
+        },
+        theme: {
+          color: "#3399cc",
+        },
+      };
+      var rzp1 = new Razorpay(options);
+      rzp1.on("payment.failed", function (response) {
+       console.log(response)
+       
+    
+        alert(response.error.code);
+        alert(response.error.description);
+        
+        $.ajax({
+          url: "/paymentfailure",
+          method: "POST",
+          data: {
+            payment : 'failed',
+            orderId: orderId,
+            confirmed : true
+          },
+          success: function (data) {
+            console.log(data);
+            if (data.success) {
+              
+              Toast.fire({
+                icon: "info",
+                title: "payment failed",
+              });
+              // window.location.href = `/ordersuccess?orderid=${data.order.orderId}`;
+            }
+          },
+          error: function (xhr, status, error) {
+            console.error(error);
+          },
+        });
+      });
+      rzp1.open();
+    },
+    error: function(error){
+
+    }
+  })
+
+
 }

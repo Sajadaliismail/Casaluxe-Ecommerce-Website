@@ -7,6 +7,7 @@ const { item, cartSchema } = require("../../models/cartSchema");
 const Order = require("../../models/orderSchema");
 const products = require("../../models/productSchema");
 const { wallet, transaction } = require("../../models/walletSchema");
+const { log } = require("console");
 
 const checkoutPage = async (req, res) => {
   const orderId = req.query.orderid;
@@ -124,43 +125,41 @@ const cancelOrder = async (req, res) => {
 };
 
 const orderSuccess = async (req, res) => {
-
   const id = req.userId;
-  const orderId = req.query.orderid;console.log(req.session);
+  const orderId = req.query.orderid;
   const cart = await cartSchema.findById(id).populate({
     path: "products",
     populate: { path: "product", model: "products" },
   });
   const order = await Order.findOne({orderId:orderId})
   if(order){
-
-  res.render("User/orderSuccess", { orderId, cart });
+  res.render("User/orderSuccess", { orderId, cart ,order});
 }
 else{
-
   res.redirect('/shop')
 }
 };
 
 const orderFailure = async (req, res) => {
-
-  console.log(req.session);
-  console.log(req.body);
   const orderId = req.body.orderId;
+  const confirmed = req.body.confirmed
   try {
-
-    await Order.findOneAndUpdate(
-      { orderId: orderId },
-      {
-        paymentStatus: "pending",
+console.log(confirmed);
+const order = await Order.findOne(
+      { orderId: orderId })
+      order.paymentStatus = "pending"
+      if(confirmed == true){
+      order.isConfirmed = true
       }
-    );
-    return res.json({ success: true });
-  } catch (error) {}
+      await order.save()
+    return res.json({ success: true ,order });
+  } catch (error) {
+
+    console.log(error);
+  }
 };
 
 const placeOrder = async (req, res) => {
-
   try {
     console.log(req.body);
     const { order_id, address, paymentMethod } = req.body;
@@ -197,6 +196,7 @@ const placeOrder = async (req, res) => {
         address: address,
         isConfirmed: true,
         paymentmethod: "noPayment",
+        paymentStatus: 'walletPayment'
       });
       return res.json({
         status: "Success",
@@ -241,7 +241,7 @@ const placeOrder = async (req, res) => {
         currency: "INR",
         receipt: "" + order._id,
       };
-
+console.log(options);
       const razorpayOrder = await new Promise((resolve, reject) => {
         instance.orders.create(options, async function (err, order) {
           if (err) {
@@ -262,7 +262,7 @@ const placeOrder = async (req, res) => {
       await Order.findByIdAndUpdate(order_id, {
         address: address,
       });
-
+console.log(razorpayOrder);
       return res.json({
         status: "Success",
         message: razorpayOrder,
@@ -288,6 +288,57 @@ const placeOrder = async (req, res) => {
     }
   }
 };
+
+const retryPayment = async (req, res) => {
+  try {
+    const { order_id } = req.body;
+    const userId = req.userId;
+
+    const userdata = await user.findById(userId);
+
+
+    const order = await Order.findById(order_id);
+
+    const instance = new Razorpay({
+      key_id: process.env.KEY_ID,
+      key_secret: process.env.KEY_SECRET,
+    });
+
+    const amount = (order.totalAmountAfterDiscount - order.walletCashUsed) * 100;
+
+    const options = {
+      amount: amount,
+      currency: "INR",
+      receipt: "" + order._id,
+    };
+
+    const razorpayOrder = await new Promise((resolve, reject) => {
+      instance.orders.create(options, async (err, order) => {
+        if (err) {
+          console.error(err);
+          await Order.findByIdAndUpdate(order_id, { paymentStatus: "pending" });
+          reject(err);
+        } else {
+          await Order.findByIdAndUpdate(order_id, { paymentStatus: "Payment Initiated" });
+          resolve(order);
+        }
+      });
+    });
+
+ 
+    return res.json({
+      status: "Success",
+      message: razorpayOrder,
+      orderId: order.orderId,
+      user: userdata,
+      razorpay: true,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ status: "Error", message: "Internal Server Error" });
+  }
+};
+
 
 const deductMoneyFromWallet = async (req, res) => {
   try {
@@ -606,5 +657,6 @@ module.exports = {
   orderFailure,
   moveToCart,
   returnMoneyToWallet,
-  deductMoneyFromWallet
+  deductMoneyFromWallet,
+  retryPayment
 };
