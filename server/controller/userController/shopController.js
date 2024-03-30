@@ -1,5 +1,5 @@
 
-const { cartSchema, item } = require("../../models/cartSchema");
+const { Cart, Item } = require("../../models/cartSchema");
 const productSchema = require("../../models/productSchema");
 const Category = require("../../models/categorySchema");
 const RoomType = require("../../models/roomtypeSchema");
@@ -7,15 +7,13 @@ const products = require("../../models/productSchema");
 const calculateAverageRating = require("../../services/ratingUtils");
 
 const shopPage = async (req, res) => {
-  console.log(req.body);
-  console.log(req.query);
 
   try {
     const id = req.userId;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 9;
     const categories = await Category.find({isActive:true});
-    const cart = await cartSchema.findById(id).populate({
+    const cart = await Cart.findById(id).populate({
       path: "products",
       populate: { path: "product", model: "products" },
     });
@@ -40,8 +38,10 @@ const shopPage = async (req, res) => {
       categories
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).send("Internal Server Error");
+  
+    res
+    .status(500)
+    .render("User/page-error", { error: "Internal Server Error" });
   }
 };
 
@@ -96,7 +96,7 @@ const shopSortingPage = async (req, res) => {
         return;
     }
 
-    const cart = await cartSchema.findById(id).populate({
+    const cart = await Cart.findById(id).populate({
       path: "products",
       populate: { path: "product", model: "products" },
     });
@@ -133,14 +133,16 @@ const shopSortingPage = async (req, res) => {
 const shopDetails = async (req, res) => {
   try {
     const id = req.userId;
-    const cart = await cartSchema.findById(id).populate({
+    const cart = await Cart.findById(id).populate({
       path: "products",
       populate: { path: "product", model: "products" },
     });
     res.render("User/shopside", { cart: cart });
   } catch (error) {
     console.log(error);
-    res.status(500).send("Internal Server Error");
+    res
+      .status(500)
+      .render("User/page-error", { error: "Internal Server Error" });
   }
 };
 
@@ -156,10 +158,38 @@ const searchProduct = async (req, res) => {
   }
 };
 
+const homePage = async (req, res) => {
+  try {
+    
+    if(req.cookies.jwt){
+      res.redirect('/home')
+    }
+    else{
+    
+    const categories = await Category.find({isActive:true});
+    const roomTypes = await RoomType.find({isActive:true});
+    const products = await productSchema
+      .find({ status: true })
+      .populate("category")
+      .populate("roomtype")
+      .exec();
+
+    res.render("User/landingpage", {
+      productdata: products,
+      categories: categories,
+      roomtype: roomTypes,
+      // cart: cart,
+    });}
+  } catch (error) {
+    console.log(error);
+    res.render("User/page-error", { error: error.message });
+  }
+};
+
 const landingPage = async (req, res) => {
   try {
     const id = req.userId;
-    const cart = await cartSchema.findById(id).populate({
+    const cart = await Cart.findById(id).populate({
       path: "products",
       populate: { path: "product", model: "products" },
     });
@@ -188,7 +218,7 @@ const productPage = async (req, res) => {
   try {
     const productId = req.params.id;
     const id = req.userId;
-    const cart = await cartSchema.findById(id).populate({
+    const cart = await Cart.findById(id).populate({
       path: "products",
       populate: { path: "product", model: "products" },
     });
@@ -235,7 +265,7 @@ const categoryPage = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 12;
 
-    const cart = await cartSchema.findById(id).populate({
+    const cart = await Cart.findById(id).populate({
       path: "products",
       populate: { path: "product", model: "products" },
     });
@@ -260,12 +290,12 @@ if(items){
     });
   }
   else{
-    res.redirect('/')
+    res.redirect('/home')
   }
   } catch (error) {
     console.log(error);
     
-    res.redirect('/')
+    res.redirect('/home')
   }
 };
 
@@ -276,7 +306,7 @@ const roomTypePage = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 12;
 
-    const cart = await cartSchema.findById(id).populate({
+    const cart = await Cart.findById(id).populate({
       path: "products",
       populate: { path: "product", model: "products" },
     });
@@ -301,19 +331,19 @@ if(items){
     });
   }
   else{
-    res.redirect('/')
+    res.redirect('/home')
   }
   } catch (error) {
     console.log(error);
     // res.status(500).send("Internal Server Error");
-    res.redirect('/')
+    res.redirect('/home')
   }
 };
 
 const rating = async (req, res) => {
   try {
     const itemId = req.body.itemId;
-    const itemDocument = await item.findById(itemId);
+    const itemDocument = await Item.findById(itemId);
     itemDocument.rating = req.body.rating;
     await itemDocument.save();
     const productId = itemDocument.product;
@@ -326,7 +356,9 @@ const rating = async (req, res) => {
       message: "Thank You for rating us",
       rated: true,
     });
-  } catch (error) {}
+  } catch (error) {
+    res.json({message: 'some error occured'})
+  }
 };
 
 module.exports = {
@@ -339,4 +371,5 @@ module.exports = {
   categoryPage,
   roomTypePage,
   rating,
+  homePage
 };

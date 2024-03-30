@@ -210,7 +210,7 @@ $(document).ready(function () {
                 success: function (data) {
                   if (data.success) {
                     Toast.fire({
-                      icon: "Success",
+                      icon: "success",
                       title: "Payment success",
                     }).then(()=>{
                       window.location.href = `/ordersuccess?orderid=${data.message}`;
@@ -267,8 +267,7 @@ $(document).ready(function () {
            console.log(response)
            
 
-            alert(response.error.code);
-            alert(response.error.description);
+            
             
             $.ajax({
               url: "/paymentfailure",
@@ -340,10 +339,15 @@ function cancelorder(params,index) {
         });
 button.disabled = true
 button.textContent = 'Order Canceled'
+location.reload()
       }
     },
     error: function (error) {
       // handle error
+      Toast.fire({
+        icon: "error",
+        title: `Some error occured`,
+      });
     },
   });
 }
@@ -403,14 +407,11 @@ if(response.success){
 
 function makePayment(params){
 const order_id = params
-console.log(order_id);
   $.ajax({
     url: "/retrypayment",
     method: "POST",
     data : {order_id},
     success: function (response){
-      console.log(response)
-
       const order = response.message;
           const user = response.user;
           const orderId = response.orderId;
@@ -434,14 +435,14 @@ console.log(order_id);
               signature: response.razorpay_signature,
             },
             success: function (data) {
-       console.log(data)
-
               if (data.success) {
-                // window.location.href = `/ordersuccess?orderid=${data.message}`;
                 Toast.fire({
-                  icon: "Success",
+                  icon: "success",
                   title: "payment success",
-                });
+                }).then(()=>{
+                  window.location.href = `/myaccount`;
+
+                })
               }
             },
             error: function (xhr, status, error) {
@@ -457,7 +458,7 @@ console.log(order_id);
               data: {
                 payment : 'failed',
                 orderId: orderId,
-            confirmed : false
+            confirmed : true
     
               },
               success: function (data) {
@@ -490,12 +491,7 @@ console.log(order_id);
       };
       var rzp1 = new Razorpay(options);
       rzp1.on("payment.failed", function (response) {
-       console.log(response)
-       
-    
-        alert(response.error.code);
-        alert(response.error.description);
-        
+
         $.ajax({
           url: "/paymentfailure",
           method: "POST",
@@ -505,14 +501,12 @@ console.log(order_id);
             confirmed : true
           },
           success: function (data) {
-            console.log(data);
             if (data.success) {
               
               Toast.fire({
                 icon: "info",
                 title: "payment failed",
               });
-              // window.location.href = `/ordersuccess?orderid=${data.order.orderId}`;
             }
           },
           error: function (xhr, status, error) {

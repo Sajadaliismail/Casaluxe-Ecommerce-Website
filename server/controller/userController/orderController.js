@@ -3,7 +3,7 @@ const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const { user, AddressSchema } = require("../../models/userSchema");
 const mongoose = require("mongoose");
-const { item, cartSchema } = require("../../models/cartSchema");
+const { Cart, Wishlist, Item } = require("../../models/cartSchema");
 const Order = require("../../models/orderSchema");
 const products = require("../../models/productSchema");
 const { wallet, transaction } = require("../../models/walletSchema");
@@ -24,11 +24,11 @@ const checkoutPage = async (req, res) => {
     path: "items",
     populate: { path: "product", model: "products" },
   });
-  const cart = await cartSchema.findById(id).populate({
+  const cart = await Cart.findById(id).populate({
     path: "products",
     populate: { path: "product", model: "products" },
   });
-  console.log(order);
+
   try {
     const productAndCategoryIdsInOrder = order.items.map((item) => ({
       productId: item.product._id,
@@ -40,7 +40,7 @@ const checkoutPage = async (req, res) => {
     const categoryIdsInOrder = productAndCategoryIdsInOrder.map(
       (item) => item.categoryId
     );
-    console.log(categoryIdsInOrder);
+
 
     const coupons = await couponSchema.find({
       $and: [
@@ -53,8 +53,7 @@ const checkoutPage = async (req, res) => {
           }
       ],
   });
-  
-    console.log(coupons);
+
     if (order.isConfirmed) {
       res.redirect("/cart");
     } else {
@@ -127,13 +126,17 @@ const cancelOrder = async (req, res) => {
 const orderSuccess = async (req, res) => {
   const id = req.userId;
   const orderId = req.query.orderid;
-  const cart = await cartSchema.findById(id).populate({
+  const cart = await Cart.findById(id).populate({
     path: "products",
     populate: { path: "product", model: "products" },
   });
   const order = await Order.findOne({orderId:orderId})
-  if(order){
-  res.render("User/orderSuccess", { orderId, cart ,order});
+  if(order && order.orderStatus != 'pending'){
+  res.render("User/orderSuccess", { orderId, cart ,order,placed : 'Order placed successfully!'});
+}
+else if(order && order.orderStatus == 'pending'){
+  res.render("User/orderSuccess", { orderId, cart ,order,placed : `Order placed, Please continue the payment in the order page`});
+
 }
 else{
   res.redirect('/shop')
@@ -144,12 +147,13 @@ const orderFailure = async (req, res) => {
   const orderId = req.body.orderId;
   const confirmed = req.body.confirmed
   try {
-console.log(confirmed);
 const order = await Order.findOne(
       { orderId: orderId })
       order.paymentStatus = "pending"
-      if(confirmed == true){
+      if(confirmed == 'true'){
       order.isConfirmed = true
+      }
+      else {
       }
       await order.save()
     return res.json({ success: true ,order });
@@ -195,7 +199,7 @@ const placeOrder = async (req, res) => {
       await Order.findByIdAndUpdate(order_id, {
         address: address,
         isConfirmed: true,
-        paymentmethod: "noPayment",
+        paymentmethod: "wallet",
         paymentStatus: 'walletPayment'
       });
       return res.json({
@@ -304,14 +308,15 @@ const retryPayment = async (req, res) => {
       key_secret: process.env.KEY_SECRET,
     });
 
-    const amount = (order.totalAmountAfterDiscount - order.walletCashUsed) * 100;
+    const amount = ((order.totalAmountAfterDiscount - order.walletCashUsed) * 100).toFixed(0);
+    console.log(amount);
 
     const options = {
       amount: amount,
       currency: "INR",
       receipt: "" + order._id,
     };
-
+console.log(options,order);
     const razorpayOrder = await new Promise((resolve, reject) => {
       instance.orders.create(options, async (err, order) => {
         if (err) {
@@ -417,174 +422,185 @@ const applyCoupon = async (req, res) => {
   const couponId = req.body.couponId;
   const orderId = req.body.orderId;
 
-  const order = await Order.findById(orderId).populate({
-    path: "items",
-    populate: { path: "product", model: "products" },
-  });
-
-  const couponApplied = order.items.some((item) => item.couponDiscount > 0);
-
-  if (couponApplied) {
-    return res.json({
-      success: false,
-      message: "Coupon has already been applied to this order",
-    });
-  }
-  console.log(order);
-  const coupon = await couponSchema.findById(couponId);
-  if (coupon) {
-    const currentDate = new Date();
-
-    if (coupon.endDate < currentDate) {
-      return res.json({ expired: true });
-    }
-    for (const items of order.items) {
-      if (
-        (coupon.products &&
-          items.product._id.toString() === coupon.products.toString()) ||
-        (coupon.categories &&
-          items.product.category.toString() === coupon.categories.toString())
-      ) {
-        const updatedItem = await item.findByIdAndUpdate(
-          items._id,
-          {
-            couponDiscount: coupon.discount,
-          },
-          { new: true }
-        );
-
-        updatedItem.couponDiscountReduction =
-          ((updatedItem.couponDiscount || 0) *
-            (updatedItem.productPrice || 0)) /
-          100;
-        updatedItem.priceAfterDiscounts =
-          (updatedItem.productPrice || 0) -
-          (updatedItem.offerPriceReduction || 0) -
-          (updatedItem.couponDiscountReduction || 0);
-
-        await updatedItem.save();
-
-        const totalDiscountPipeline = [
-          {
-            $match: { orderId: order.orderId },
-          },
-          {
-            $lookup: {
-              from: "items",
-              localField: "items",
-              foreignField: "_id",
-              as: "populatedItems",
-            },
-          },
-          {
-            $unwind: "$populatedItems",
-          },
-          {
-            $set: {
-              "populatedItems.priceAfterDiscounts": {
-                $multiply: [
-                  {
-                    $subtract: [
-                      {
-                        $subtract: [
-                          "$populatedItems.productPrice",
-                          "$populatedItems.offerPriceReduction",
-                        ],
-                      },
-                      "$populatedItems.couponDiscountReduction",
-                    ],
-                  },
-                  "$populatedItems.count",
-                ],
-              },
-            },
-          },
-          {
-            $group: {
-              _id: "$_id",
-              totalAmountAfterDiscount: {
-                $sum: "$populatedItems.priceAfterDiscounts",
-              },
-            },
-          },
-        ];
-
-        const result = await Order.aggregate(totalDiscountPipeline);
-
-        const totalAmountAfterDiscount =
-          result.length > 0 ? result[0].totalAmountAfterDiscount : 0;
-        await Order.findByIdAndUpdate(
-          orderId,
-          { totalAmountAfterDiscount: totalAmountAfterDiscount },
-          { new: true }
-        );
-      }
-    }
-    const orders = await Order.findById(orderId).populate({
+  try {
+    const order = await Order.findById(orderId).populate({
       path: "items",
       populate: { path: "product", model: "products" },
     });
-    return res.json({ success: true, status: "Success", order: orders });
+  
+    const couponApplied = order.items.some((item) => item.couponDiscount > 0);
+  
+    if (couponApplied) {
+      return res.json({
+        success: false,
+        message: "Coupon has already been applied to this order",
+      });
+    }
+    console.log(order);
+    const coupon = await couponSchema.findById(couponId);
+    if (coupon) {
+      const currentDate = new Date();
+  
+      if (coupon.endDate < currentDate) {
+        return res.json({ expired: true });
+      }
+      for (const items of order.items) {
+        if (
+          (coupon.products &&
+            items.product._id.toString() === coupon.products.toString()) ||
+          (coupon.categories &&
+            items.product.category.toString() === coupon.categories.toString())
+        ) {
+          const updatedItem = await Item.findByIdAndUpdate(
+            items._id,
+            {
+              couponDiscount: coupon.discount,
+            },
+            { new: true }
+          );
+  
+          updatedItem.couponDiscountReduction =
+            ((updatedItem.couponDiscount || 0) *
+              (updatedItem.productPrice || 0)) /
+            100;
+          updatedItem.priceAfterDiscounts =
+            (updatedItem.productPrice || 0) -
+            (updatedItem.offerPriceReduction || 0) -
+            (updatedItem.couponDiscountReduction || 0);
+  
+          await updatedItem.save();
+  
+          const totalDiscountPipeline = [
+            {
+              $match: { orderId: order.orderId },
+            },
+            {
+              $lookup: {
+                from: "items",
+                localField: "items",
+                foreignField: "_id",
+                as: "populatedItems",
+              },
+            },
+            {
+              $unwind: "$populatedItems",
+            },
+            {
+              $set: {
+                "populatedItems.priceAfterDiscounts": {
+                  $multiply: [
+                    {
+                      $subtract: [
+                        {
+                          $subtract: [
+                            "$populatedItems.productPrice",
+                            "$populatedItems.offerPriceReduction",
+                          ],
+                        },
+                        "$populatedItems.couponDiscountReduction",
+                      ],
+                    },
+                    "$populatedItems.count",
+                  ],
+                },
+              },
+            },
+            {
+              $group: {
+                _id: "$_id",
+                totalAmountAfterDiscount: {
+                  $sum: "$populatedItems.priceAfterDiscounts",
+                },
+              },
+            },
+          ];
+  
+          const result = await Order.aggregate(totalDiscountPipeline);
+  
+          const totalAmountAfterDiscount =
+            result.length > 0 ? result[0].totalAmountAfterDiscount : 0;
+          await Order.findByIdAndUpdate(
+            orderId,
+            { totalAmountAfterDiscount: totalAmountAfterDiscount },
+            { new: true }
+          );
+        }
+      }
+      const orders = await Order.findById(orderId).populate({
+        path: "items",
+        populate: { path: "product", model: "products" },
+      });
+      return res.json({ success: true, status: "Success", order: orders });
+    }
+    return res.json({ failed: true, status: "failed" });
+  } catch (error) {
+
+    return res.json({ failed: true, status: "failed" });
+    
   }
-  return res.json({ failed: true, status: "failed" });
 };
 
 const removeCoupon = async (req, res) => {
   const couponId = req.body.couponId;
   const orderId = req.body.orderId;
 
-  const order = await Order.findById(orderId).populate({
-    path: "items",
-    populate: { path: "product", model: "products" },
-  });
-  const coupon = await couponSchema.findById(couponId);
-
-  if (coupon) {
-    for (const items of order.items) {
-      if (
-        (coupon.products &&
-          items.product._id.toString() === coupon.products.toString()) ||
-        (coupon.categories &&
-          items.product.category.toString() === coupon.categories.toString())
-      ) {
-        // Update item to remove coupon discount
-        const updatedItem = await item.findByIdAndUpdate(
-          items._id,
-          {
-            couponDiscount: 0,
-          },
-          { new: true }
-        );
-
-        updatedItem.couponDiscountReduction = 0;
-        updatedItem.priceAfterDiscounts =
-          (updatedItem.productPrice || 0) -
-          (updatedItem.offerPriceReduction || 0);
-
-        await updatedItem.save();
-        const orders = await Order.findById(orderId).populate({
-          path: "items",
-          populate: { path: "product", model: "products" },
-        });
-        const totalAmountAfterDiscount = orders.items.reduce((total, item) => {
-          const priceAfterDiscounts = item.priceAfterDiscounts * item.count;
-          return total + priceAfterDiscounts;
-        }, 0);
-
-        await Order.findByIdAndUpdate(
-          orderId,
-          { totalAmountAfterDiscount: totalAmountAfterDiscount },
-          { new: true }
-        );
-      }
-    }
-    const orders = await Order.findById(orderId).populate({
+  try {
+    const order = await Order.findById(orderId).populate({
       path: "items",
       populate: { path: "product", model: "products" },
     });
-    return res.json({ success: true, status: "Success", order: orders });
+    const coupon = await couponSchema.findById(couponId);
+  
+    if (coupon) {
+      for (const items of order.items) {
+        if (
+          (coupon.products &&
+            items.product._id.toString() === coupon.products.toString()) ||
+          (coupon.categories &&
+            items.product.category.toString() === coupon.categories.toString())
+        ) {
+          // Update item to remove coupon discount
+          const updatedItem = await Item.findByIdAndUpdate(
+            items._id,
+            {
+              couponDiscount: 0,
+            },
+            { new: true }
+          );
+  
+          updatedItem.couponDiscountReduction = 0;
+          updatedItem.priceAfterDiscounts =
+            (updatedItem.productPrice || 0) -
+            (updatedItem.offerPriceReduction || 0);
+  
+          await updatedItem.save();
+          const orders = await Order.findById(orderId).populate({
+            path: "items",
+            populate: { path: "product", model: "products" },
+          });
+          const totalAmountAfterDiscount = orders.items.reduce((total, item) => {
+            const priceAfterDiscounts = item.priceAfterDiscounts * item.count;
+            return total + priceAfterDiscounts;
+          }, 0);
+  
+          await Order.findByIdAndUpdate(
+            orderId,
+            { totalAmountAfterDiscount: totalAmountAfterDiscount },
+            { new: true }
+          );
+        }
+      }
+      const orders = await Order.findById(orderId).populate({
+        path: "items",
+        populate: { path: "product", model: "products" },
+      });
+      return res.json({ success: true, status: "Success", order: orders });
+    }
+    return res.json({ failed: true, status: "failed" });
+  } catch (error) {
+    return res.json({ failed: true, status: "failed" });
+    
   }
-  return res.json({ failed: true, status: "failed" });
 };
 
 const returnOrder = async (req, res) => {
@@ -611,10 +627,10 @@ const moveToCart = async (req, res) => {
     return  res.json({paymentInProgress : true,message : 'Payment is in progress'})
     }
 
-    const cartData = await cartSchema.findById(userId);
+    const cartData = await Cart.findById(userId);
     cartData.products = [];
     const promises = orderData.items.map(async (product) => {
-      const productData = new item({
+      const productData = new Item({
         product: product.product._id,
         count: product.count,
         productPrice: product.productPrice,

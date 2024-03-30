@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 
 const secret = process.env.JWT_SECRET
 const { user } = require("../../models/userSchema");
-const { cartSchema, wishlistSchema } = require("../../models/cartSchema");
+const { Cart, Wishlist,Item } = require("../../models/cartSchema");
 const generateReferralCode = require("../../services/referralCodeGenerator");
 const { wallet } = require("../../models/walletSchema");
 
@@ -74,7 +74,7 @@ const callbackGoogle = async (req, res) => {
       });
 
       const walletUser = new wallet({ _id: data._id });
-      const wishlist = new wishlistSchema({ _id: data._id });
+      const wishlist = new Wishlist({ _id: data._id });
       const cart = new cartSchema({ _id: data._id });
       await Promise.all([walletUser.save(), data.save(),wishlist.save(),cart.save()]);
       const token = jwt.sign({ userId:  data._id }, secret, {
@@ -84,6 +84,7 @@ const callbackGoogle = async (req, res) => {
       res.redirect('/')
     }
 } catch (error) {
+  res.redirect('/')
   
 }
 };

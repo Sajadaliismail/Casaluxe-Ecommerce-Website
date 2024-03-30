@@ -236,7 +236,7 @@ function addtocart(id) {
     const productid = id;
     const counts = document.getElementById(`count${productid}`).value;
 
-    $.ajax({
+    $.ajax({ 
       type: "POST",
       url: "/addtocart",
       data: { product: productid, count: counts },
@@ -265,9 +265,11 @@ function addtocart(id) {
           getcartdata();
         } else {
           Toast.fire({
-            icon: "error",
-            title: "Some error occured",
-          });
+            icon: "info",
+            title: "Please login to continue",
+          }).then(()=>{
+            window.location.href = '/login'
+          })
         }
       },
       error: function (error) {
@@ -408,9 +410,11 @@ function addtowishlist(id) {
           });
         } else {
           Toast.fire({
-            icon: "error",
-            title: "Some error occured",
-          });
+            icon: "info",
+            title: "Please login to continue",
+          }).then(()=>{
+            window.location.href = '/login'
+          })
         }
       },
       error: function (error) {

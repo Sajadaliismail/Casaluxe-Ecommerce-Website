@@ -422,7 +422,7 @@
         ionRangeSlider Activation 
     -----------------------------------*/
  
-if (window.location.pathname.startsWith("/shop")) {
+if (window.location.pathname.startsWith("/shop") || window.location.pathname.startsWith("/roomtype") || window.location.pathname.startsWith("/category")) {
    
 let number = document.getElementById('rangeOfTheSlider').value;
 

@@ -64,7 +64,7 @@ const blockUser = async (req, res) => {
         if (!data) {
           res.status(404).send({ message: `Cannot block with id ${id}` });
         } else {
-          res.send({ message: "Successful" });
+          res.send({ message: "Successful" ,status : userData.isBlocked});
         }
       });
   } catch (error) {

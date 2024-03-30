@@ -1,6 +1,6 @@
 const { user, AddressSchema } = require("../../models/userSchema");
 const mongoose = require("mongoose");
-const { item, cartSchema } = require("../../models/cartSchema");
+const { Item, Cart } = require("../../models/cartSchema");
 const Order = require("../../models/orderSchema");
 const products = require("../../models/productSchema");
 
@@ -20,7 +20,7 @@ const addToCart = async (req, res) => {
 
     }
 
-    const carts = await cartSchema.findById(id).populate({
+    const carts = await Cart.findById(id).populate({
       path: "products",
       populate: { path: "product", model: "products" },
     });
@@ -46,7 +46,7 @@ const addToCart = async (req, res) => {
       ) {
         return res.json({ stockout: "Sorry, product is out of stock" });
       } else {
-        await item.findByIdAndUpdate(
+        await Item.findByIdAndUpdate(
           itemid,
           { $inc: { count: newcount } },
           { new: true }
@@ -57,7 +57,7 @@ const addToCart = async (req, res) => {
       if (parseInt(newcount) > product.stock) {
         return res.json({ stockout: "Sorry, product is out of stock" });
       } else {
-        const items = new item({
+        const items = new Item({
           product: productid,
           count: newcount,
           productPrice: product.price,
@@ -86,7 +86,7 @@ const checkout = async (req, res) => {
     const itemCounts = count.map((value) => parseInt(value));
 
     // Fetch cart and populate products
-    const cart = await cartSchema.findById(userId).populate({
+    const cart = await Cart.findById(userId).populate({
       path: "products",
       populate: { path: "product", model: "products" },
     });
@@ -110,7 +110,7 @@ const checkout = async (req, res) => {
           greater: true,
         });
       } else if (product.stock >= cartProduct.count) {
-        await item.updateOne(
+        await Item.updateOne(
           { _id: cartProduct._id },
           { $set: { count: itemCounts[i] } }
         );
@@ -171,7 +171,7 @@ console.log(order);
 const removeItem = async (req, res) => {
   const id = req.userId;
   const productid = req.body.itemId;
-  const cart = await cartSchema.findById(id).populate({
+  const cart = await Cart.findById(id).populate({
     path: "products",
     populate: { path: "product", model: "products" },
   });
@@ -186,7 +186,7 @@ const removeItem = async (req, res) => {
       (product) =>
         JSON.stringify(product.product._id) === JSON.stringify(productid)
     );
-    await item.findByIdAndDelete(cart.products[index]._id);
+    await Item.findByIdAndDelete(cart.products[index]._id);
     cart.products.splice(index, 1);
     await cart.save();
     return res.json({ status: "success", message: "Success", success: true });
@@ -198,13 +198,13 @@ const removeItem = async (req, res) => {
 const clearCart = async (req, res) => {
   try {
     const id = req.userId;
-    const cart = await cartSchema.findById(id).populate({
+    const cart = await Cart.findById(id).populate({
       path: "products",
       populate: { path: "product", model: "products" },
     });
 
     cart.products.forEach(async (product) => {
-      await item.findByIdAndDelete(product._id);
+      await Item.findByIdAndDelete(product._id);
     });
 
     if (!cart) {
@@ -230,7 +230,7 @@ const cartPage = async (req, res) => {
       model: "AddressSchema",
     });
 
-    const cart = await cartSchema.findById(id).populate({
+    const cart = await Cart.findById(id).populate({
       path: "products",
       populate: { path: "product", model: "products" },
     });
@@ -250,7 +250,7 @@ const cartPage = async (req, res) => {
 const cartDetails = async (req, res) => {
   try {
     id = req.userId;
-    const cart = await cartSchema.findById(id).populate({
+    const cart = await Cart.findById(id).populate({
       path: "products",
       populate: { path: "product", model: "products" },
     });

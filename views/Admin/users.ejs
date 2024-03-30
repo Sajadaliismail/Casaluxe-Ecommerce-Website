@@ -32,9 +32,9 @@
                                   <td><a href="/admin/api/userinfo/<%= user[i]._id%>"><%= user[i].name %></a></td>
                                   <td><%= user[i].email %></td>
                                   <td><%= user[i].phone %></td>
-                                  <td><% if (user[i].isBlocked==false) { %>Active<% } else { %>Blocked<% } %></td>
+                                  <td id="status<%= user[i]._id%>"><% if (user[i].isBlocked==false) { %>Active<% } else { %>Blocked<% } %></td>
                                   <td class="d-flex flex-row text-center">
-                                            <button onclick="blockunblock(this)"  style="width: 75%; padding: 0;" data-block-id=<%= user[i]._id%>  class="<% if (user[i].isBlocked==false) { %>btn btn-danger btn-sm<% } else { %>btn btn-primary btn-sm<% } %> btn" type=""><% if (user[i].isBlocked==false) { %>Block<% } else { %>Unblock<% } %></button>
+                                            <button id="btn<%= user[i]._id%>" onclick="blockunblock(this)"  style="width: 75%; padding: 0;" data-block-id=<%= user[i]._id%>  class="<% if (user[i].isBlocked==false) { %>btn btn-danger btn-sm<% } else { %>btn btn-primary btn-sm<% } %> btn" type=""><% if (user[i].isBlocked==false) { %>Block<% } else { %>Unblock<% } %></button>
                                         </div>
                                     </div> <!-- dropdown //end -->
                                 </td>

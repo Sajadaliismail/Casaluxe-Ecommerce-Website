@@ -1,9 +1,17 @@
 const ExcelJS = require('exceljs');
 
+/**
+ * Generate an Excel spreadsheet containing sales report data.
+ * @param {Array} reportData - Array of objects containing sales report data.
+ * @returns {Promise<Buffer>} A promise that resolves with the generated Excel buffer.
+ */
 async function generateExcelReports(reportData) {
+    // Create a new Excel workbook
     const workbook = new ExcelJS.Workbook();
+    // Add a worksheet named 'Sales Report'
     const worksheet = workbook.addWorksheet('Sales Report');
 
+    // Define columns for the worksheet
     worksheet.columns = [
         { 
             header: 'Order Date', 
@@ -27,6 +35,7 @@ async function generateExcelReports(reportData) {
         });
     });
 
+    // Write the workbook to a buffer in xlsx format
     const buffer = await workbook.xlsx.writeBuffer();
     return buffer;
 }

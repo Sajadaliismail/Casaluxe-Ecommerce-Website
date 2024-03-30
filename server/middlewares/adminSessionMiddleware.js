@@ -3,13 +3,13 @@ const { v4: uuidv4 } = require("uuid");
 
 const  isAuthenticated = function (req, res, next) {
   res.set("Cache-Control", "no-store");
-  // if (req.session.isAuth) {
-  //   next();
-  // } else {
-  //   res.redirect("/admin");
-  // }
-  
+  if (req.session.isAuth) {
     next();
+  } else {
+    res.redirect("/admin");
+  }
+  
+    // next();
 
 }
 

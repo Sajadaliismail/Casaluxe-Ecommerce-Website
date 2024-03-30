@@ -8,7 +8,7 @@
                 <h2 class="title">My Account</h2>
 
                 <ul class="breadcrumb">
-                    <li><a href="/">Home</a></li>
+                    <li><a href="/home">Home</a></li>
                     <li class="active">My Account</li>
                 </ul>
             </div>
@@ -122,7 +122,7 @@
                                                 </dl>
                                                
                                                 </article>
-                                            <% if (order[index].paymentStatus === 'pending' && order[index].status !== 'canceled' ) { %>
+                                            <% if (order[index].paymentStatus === 'pending' && order[index].orderStatus !== 'canceled' && order[index].orderStatus !== 'returned' ) { %>
                                                 <a type="button" onclick="makePayment('<%= order[index]._id %>')" style="background-color: #0f741e; color: #fff; font-size: 14px; border: none; padding: 8px 16px; border-radius: 4px;">Pay now</a>
                                             <% } %>
                                             <% if (order[index].orderStatus === 'canceled' || order[index].orderStatus === 'returned') { %>

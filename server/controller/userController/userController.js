@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const { MongoError } = require("mongodb");
-const { cartSchema, wishlistSchema, item } = require("../../models/cartSchema");
+const { Cart, Wishlist, Item } = require("../../models/cartSchema");
 const Order = require("../../models/orderSchema");
 const products = require("../../models/productSchema");
 const generateReferralCode = require("../../services/referralCodeGenerator");
@@ -21,7 +21,7 @@ const loginPage = (req, res) => {
       if (err) {
         res.render("User/login");
       } else {
-        res.redirect("/");
+        res.redirect("/home");
       }
     });
   } else {
@@ -34,14 +34,16 @@ const signUp = (req, res) => {
     req.session.emailVerify = false;
     res.render("User/signup");
   } catch (error) {
-    res.render("User/page-error-404", { error: error.message });
+    res
+    .status(500)
+    .render("User/page-error", { error: "Internal Server Error" });
   }
 };
 
 const myAccount = async (req, res) => {
   try {
     const id = req.userId;
-    const cart = await cartSchema.findById(id).populate({
+    const cart = await Cart.findById(id).populate({
       path: "products",
       populate: { path: "product", model: "products" },
     });
@@ -61,7 +63,9 @@ const myAccount = async (req, res) => {
       console.log(Wallet);
     res.render("User/myaccount", { userData, cart, order,Wallet });
   } catch (error) {
-    console.log(error);
+    res
+    .status(500)
+    .render("User/page-error", { error: "Internal Server Error" });
   }
 };
 
@@ -98,14 +102,14 @@ const loginPost = async (req, res) => {
         const isValid = await bcrypt.compare(password, userData.password);
         if (isValid) {
           const id = userData.id;
-          const cart = await cartSchema.findById(id);
-          const wishlist = await wishlistSchema.findById(id);
+          const cart = await Cart.findById(id);
+          const wishlist = await Wishlist.findById(id);
           if (wishlist == null) {
-            const wishlist = new wishlistSchema({ _id: id });
+            const wishlist = new Wishlist({ _id: id });
             await wishlist.save();
           }
           if (cart == null) {
-            const cart = new cartSchema({ _id: id });
+            const cart = new Cart({ _id: id });
 
             await cart.save();
           }
@@ -229,130 +233,31 @@ const signupPost = async (req, res) => {
   }
 };
 
-// const signupPost = async (req, res) => {
-//   const { name, email, phone, password, referralCode } = req.body;
-  
-//   if (req.session.emailVerify) {
-//     try {
-//       const hashpassword = await bcrypt.hash(password, 10);
-//       const referral = generateReferralCode(name);
-
-//       if (referralCode && referralCode.length === 8) {
-//         const userData = await user.findOne({ referralCode: referralCode });
-        
-//         if (userData) {
-//           const amount = 500;
-//           const gift = 250;
-          
-//           const data = new user({
-//             name,
-//             email,
-//             phone,
-//             password: hashpassword,
-//             isBlocked: false,
-//             isEmailVerified: req.session.emailVerify,
-//             addressess: [],
-//             otpemail: [],
-//             referralCode: referral,
-//           });
-          
-//           const walletUser = new wallet({ _id: data._id });
-//           const Transaction = new transaction({
-//             userId: userData._id,
-//             type: "referral",
-//             description: `Bonus as ${name} has joined using your referral code`,
-//             amount,
-//             timestamp: Date.now(),
-//           });
-
-//           const TransactionUser = new transaction({
-//             userId: data._id,
-//             type: "giftcard",
-//             description: "Signup bonus",
-//             amount: gift,
-//             timestamp: Date.now(),
-//           });
-
-//           await Promise.all([
-//             Transaction.save(),
-//             TransactionUser.save(),
-//             wallet.findByIdAndUpdate(userData._id, {
-//               $inc: { balance: amount },
-//               $push: { transactions: Transaction._id },
-//             }),
-//             walletUser.save(),
-//             data.save(),
-//           ]);
-//           return res.render("User/login");
-//         } else {
-//           return res.render("User/signup", {
-//             messageemail: "Invalid referral code",
-//           });
-//         }
-//       } 
-      
-//       const data = new user({
-//         name,
-//         email,
-//         phone,
-//         password: hashpassword,
-//         isBlocked: false,
-//         isEmailVerified: req.session.emailVerify,
-//         addressess: [],
-//         otpemail: [],
-//         referralCode: referral,
-//       });
-
-//       const walletUser = new wallet({ _id: data._id });
-//       await Promise.all([walletUser.save(), data.save()]);
-//       return res.render("User/login");
-      
-//     } catch (error) {
-//       console.log(error);
-//       console.error("Error during signup:", error);
-//       if (error && error.code === 11000) {
-//         if (error.keyPattern.email) {
-//           return res.status(400).render("User/signup", {
-//             messageemail: "Email is already registered.",
-//           });
-//         } else if (error.keyPattern.phone) {
-//           return res.status(400).render("User/signup", {
-//             messagephn: "Phone number is already registered.",
-//           });
-//         }
-//       } else if (error instanceof mongoose.Error.ValidationError) {
-//         return res.render("User/signup", {
-//           messagephn: "Check phone number again ",
-//         });
-//       }
-//     }
-//   } else {
-//     res.render("User/signup", {
-//       messageemail: "Email is not verified",
-//     });
-//   }
-// };
-
-
 
 const logout = (req, res) => {
   res.set("Cache-Control", "no-store");
   res.clearCookie("jwt");
-  res.render("User/login");
+  res.redirect("/login");
 };
 
 const wishList = async (req, res) => {
   id = req.userId;
-  const wishlist = await wishlistSchema.findById(id).populate({
-    path: "products",
-    populate: { path: "product", model: "products" },
-  });
-  const cart = await cartSchema.findById(id).populate({
-    path: "products",
-    populate: { path: "product", model: "products" },
-  });
-  console.log(wishlist);
-  res.render("User/wishlist", { cart, wishlist });
+  try {
+    const wishlist = await Wishlist.findById(id).populate({
+      path: "products",
+      populate: { path: "product", model: "products" },
+    });
+    const cart = await Cart.findById(id).populate({
+      path: "products",
+      populate: { path: "product", model: "products" },
+    });
+    console.log(wishlist);
+    res.render("User/wishlist", { cart, wishlist });
+  } catch (error) {
+    res
+      .status(500)
+      .render("User/page-error", { error: "Internal Server Error" });
+  }
 };
 
 const addToWishlist = async (req, res) => {
@@ -365,7 +270,7 @@ const addToWishlist = async (req, res) => {
       return res.json({ limit: "Sorry, you can add only three items." });
     }
 
-    const wishlist = await wishlistSchema.findById(id).populate({
+    const wishlist = await Wishlist.findById(id).populate({
       path: "products",
       populate: { path: "product", model: "products" },
     });
@@ -386,14 +291,14 @@ const addToWishlist = async (req, res) => {
       if (parseInt(newcount) + wishlist.products[index].count > 3) {
         return res.json({ limit: "Sorry, you can add only three items." });
       } else {
-        await item.findByIdAndUpdate(
+        await Item.findByIdAndUpdate(
           itemid,
           { $inc: { count: newcount } },
           { new: true }
         );
       }
     } else {
-      const items = new item({
+      const items = new Item({
         product: req.body.product,
         count: req.body.count,
       });
@@ -417,24 +322,29 @@ const removeItemWishlist = async (req, res) => {
   const itemId = req.body.itemId;
   console.log(itemId, "asf", id);
 
-  const wishlist = await wishlistSchema.findById(id).populate({
-    path: "products",
-    populate: { path: "product", model: "products" },
-  });
-  console.log("asff", itemId, "asf", id);
-  if (
-    wishlist.products.some(
-      (product) => JSON.stringify(product._id) === JSON.stringify(itemId)
-    )
-  ) {
-    const index = wishlist.products.findIndex(
-      (product) => JSON.stringify(product._id) === JSON.stringify(itemId)
-    );
-    await item.findByIdAndDelete(wishlist.products[index]._id);
-    wishlist.products.splice(index, 1);
-    await wishlist.save();
-    return res.json({ status: "success", message: "Success", success: true });
-  }
+ try {
+   const wishlist = await Wishlist.findById(id).populate({
+     path: "products",
+     populate: { path: "product", model: "products" },
+   });
+   console.log("asff", itemId, "asf", id);
+   if (
+     wishlist.products.some(
+       (product) => JSON.stringify(product._id) === JSON.stringify(itemId)
+     )
+   ) {
+     const index = wishlist.products.findIndex(
+       (product) => JSON.stringify(product._id) === JSON.stringify(itemId)
+     );
+     await Item.findByIdAndDelete(wishlist.products[index]._id);
+     wishlist.products.splice(index, 1);
+     await wishlist.save();
+     return res.json({ status: "success", message: "Success", success: true });
+   }
+ } catch (error) {
+  res.json({error})
+  
+ }
 };
 
 const changePassword = async (req, res) => {
@@ -502,7 +412,7 @@ try {
 }
 
 const printInvoice = async (req, res) => {
-  console.log(req.query);
+ 
       try {
   
         const orderId = req.query.id

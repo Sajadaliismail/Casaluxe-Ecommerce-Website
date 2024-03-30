@@ -1,20 +1,33 @@
-  const mongoose = require("mongoose");
+const mongoose = require("mongoose");
 
-  const transactionSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, 
-    type: { type: String, enum: ['purchase', 'deposit', 'withdrawal', 'refund', 'giftcard',"referral"] },
-    amount: { type: Number }, 
-    description : {type:String},
-    timestamp: { type: Date, default: Date.now }
+// Schema for individual transactions
+const transactionSchema = new mongoose.Schema({
+  // Reference to the user who initiated the transaction
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, 
+  // Type of transaction, restricted to specific values
+  type: { type: String, enum: ['purchase', 'deposit', 'withdrawal', 'refund', 'giftcard', "referral"] },
+  // Amount involved in the transaction
+  amount: { type: Number }, 
+  // Description of the transaction
+  description: { type: String },
+  // Timestamp indicating when the transaction occurred (defaults to current date/time)
+  timestamp: { type: Date, default: Date.now }
 });
 
-  const walletSchema = new mongoose.Schema({
-    _id : {type: mongoose.Schema.Types.ObjectId, ref: "user"},
-    balance : {type: Number, default : 0, min : 0},
-    transactions : [{ type: mongoose.Schema.Types.ObjectId, ref: "Transaction" }],
-  })
+// Schema for user wallets
+const walletSchema = new mongoose.Schema({
+  // Reference to the user owning the wallet
+  _id: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+  // Current balance in the wallet (defaults to 0, cannot be negative)
+  balance: { type: Number, default: 0, min: 0 },
+  // Array of transaction references associated with this wallet
+  transactions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Transaction" }],
+});
 
-  const wallet = mongoose.model('wallets',walletSchema)
-  const transaction = mongoose.model('Transaction', transactionSchema);
+// Model for wallet documents
+const wallet = mongoose.model('wallets', walletSchema);
 
-  module.exports = {wallet, transaction}
+// Model for transaction documents
+const transaction = mongoose.model('Transaction', transactionSchema);
+
+module.exports = { wallet, transaction };

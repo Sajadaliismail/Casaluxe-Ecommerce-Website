@@ -146,6 +146,10 @@ if (window.location.pathname.startsWith("/admin/order-details/")) {
 
 function blockunblock(button) {
   let id = button.getAttribute("data-block-id");
+  const status = document.getElementById(`status${id}`)
+  const btn = document.getElementById(`btn${id}`)
+
+  console.log(status,btn);
   Swal.fire({
     title: "Are you sure?",
     text: "",
@@ -168,9 +172,21 @@ function blockunblock(button) {
           }
         })
         .then((data) => {
-          Swal.fire("Success!", "Success", "success").then(function () {
-            location.reload();
-          });
+          Swal.fire("Success!", "Success", "success")
+
+          console.log(data);
+          if(data.status==true){
+            status.textContent = 'Active'
+            btn.textContent = 'Block'
+            btn.classList.remove('btn-primary');
+    btn.classList.add('btn-danger');
+          }
+          else{
+            status.textContent = 'Blocked'
+            btn.textContent = 'Unblock'
+            btn.classList.remove('btn-danger');
+    btn.classList.add('btn-primary');
+          }
         })
         .catch((error) => {
           console.error("Error :", error);

@@ -10,7 +10,7 @@
                 <h2 class="title">Product Details</h2>
 
                 <ul class="breadcrumb">
-                    <li><a href="/">Home</a></li>
+                    <li><a href="/home">Home</a></li>
                     <li class="active">Product Details</li>
                 </ul>
             </div>
@@ -149,6 +149,12 @@
                                     
                                 </div>
                                 <div class="single-info">
+                                    <span class="lable"><%= productdata.rating.length %> reviews : </span>
+                                    <span class="value"><%= rating %></span>
+
+                                </div>
+                                <div class="single-info">
+                                    
                                     <span class="lable">SKU:</span>
                                     <span class="value"><%= productdata.sku %></span>
                                 </div>
