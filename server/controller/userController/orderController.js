@@ -31,7 +31,7 @@ const checkoutPage = async (req, res) => {
       path: "products",
       populate: { path: "product", model: "products" },
     });
-    
+
     const productAndCategoryIdsInOrder = order.items.map((item) => ({
       productId: item.product._id,
       categoryId: item.product.category,
@@ -133,10 +133,10 @@ const orderSuccess = async (req, res) => {
     populate: { path: "product", model: "products" },
   });
   const order = await Order.findOne({orderId:orderId})
-  if(order && order.orderStatus != 'pending'){
+  if(order && order.paymentStatus != 'pending'){
   res.render("User/orderSuccess", { orderId, cart ,order,placed : 'Order placed successfully!'});
 }
-else if(order && order.orderStatus == 'pending'){
+else if(order && order.paymentStatus == 'pending'){
   res.render("User/orderSuccess", { orderId, cart ,order,placed : `Order placed, Please continue the payment in the order page`});
 
 }
