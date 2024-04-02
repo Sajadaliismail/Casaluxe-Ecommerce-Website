@@ -12,24 +12,26 @@ const { log } = require("console");
 const checkoutPage = async (req, res) => {
   const orderId = req.query.orderid;
   const id = req.userId;
-  const userdata = await user.findById(id).populate({
-    path: "addresses",
-    model: "AddressSchema",
-  });
-  const Wallet = await wallet.findById(id).populate({
-    path: "transactions",
-    model: "Transaction",
-  });
-  const order = await Order.findById(orderId).populate({
-    path: "items",
-    populate: { path: "product", model: "products" },
-  });
-  const cart = await Cart.findById(id).populate({
-    path: "products",
-    populate: { path: "product", model: "products" },
-  });
+  
 
   try {
+    const userdata = await user.findById(id).populate({
+      path: "addresses",
+      model: "AddressSchema",
+    });
+    const Wallet = await wallet.findById(id).populate({
+      path: "transactions",
+      model: "Transaction",
+    });
+    const order = await Order.findById(orderId).populate({
+      path: "items",
+      populate: { path: "product", model: "products" },
+    });
+    const cart = await Cart.findById(id).populate({
+      path: "products",
+      populate: { path: "product", model: "products" },
+    });
+    
     const productAndCategoryIdsInOrder = order.items.map((item) => ({
       productId: item.product._id,
       categoryId: item.product.category,
