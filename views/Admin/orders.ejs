@@ -60,7 +60,7 @@
                                         <td><%= order[index].shippingStatus %></td>
                                         <td><%= order[index].paymentStatus %></td>
                                         <td><%= order[index].orderStatus %></span></td>
-                                        <td><%= order[index].orderdate.toLocaleString() %></td>
+                                        <td><%= order[index].orderdate.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) %></td>
                                         <td><%= order[index].totalAmount.toFixed(2) %></td>
                                         <td class="text-end">
                                             <a href="/admin/order-details/<%= order[index]._id %>" class="btn btn-md rounded font-sm">Detail</a>

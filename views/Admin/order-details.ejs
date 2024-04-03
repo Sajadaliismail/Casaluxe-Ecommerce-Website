@@ -23,7 +23,7 @@
                     <div class="row align-items-center">
                         <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
                             <span>
-                                <i class="material-icons md-calendar_today"></i> <b><%= order.orderdate.toLocaleString() %></b>
+                                <i class="material-icons md-calendar_today"></i> <b><%= order.orderdate.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })  %></b>
                             </span> <br>
                             <small class="text-muted"><%= order.orderId %></small>
                         </div>

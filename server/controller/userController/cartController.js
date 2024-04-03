@@ -96,7 +96,8 @@ const checkout = async (req, res) => {
     for (let i = 0; i < cart.products.length; i++) {
       const cartProduct = cart.products[i];
       const product = cartProduct.product;
-
+const productData = await products.findById(product._id)
+console.log(productData);
       if (itemCounts[i] < 1) {
         return res.json({
           status: "failed",
@@ -115,8 +116,8 @@ const checkout = async (req, res) => {
           { $set: { count: itemCounts[i] } }
         );
         cartProduct.count = itemCounts[i];
-        product.stock -= cartProduct.count;
-        await product.save();
+        productData.stock -= cartProduct.count;
+        await productData.save();
         flag = true;
       } else {
         return res.json({

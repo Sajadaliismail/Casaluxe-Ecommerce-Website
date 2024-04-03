@@ -327,10 +327,18 @@ $(document).ready(function() {
       $(".add").off().on("click", function () {
           let input = $(this).prev();
           let currentValue = parseInt(input.val(), 10);
+          let stock = parseInt($("#stockProduct" + $(this).data('index')).val(), 10);
           if (!isNaN(currentValue)) {
-              let newValue = currentValue + 1;
-              input.val(newValue);
-              changeTotal($(this).data('index'), newValue);
+              if (currentValue < stock) {
+                  let newValue = currentValue + 1;
+                  input.val(newValue);
+                  changeTotal($(this).data('index'), newValue);
+              } else {
+                Toast.fire({
+                  icon: "info",
+                  title: "Cannot increase quantity beyond available stock",
+                })
+              }
           }
       });
 
