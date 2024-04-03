@@ -9,8 +9,7 @@
         <section class="content-main">
             <input hidden id="defaultStatusOrder" value="<%= order.orderStatus %>" >
             <input hidden id="defaultshippingStatus" value="<%= order.shippingStatus %>">
-
-                    <input hidden id="defaultpaymentStatus" value="<%= order.paymentStatus %>">
+            <input hidden id="defaultpaymentStatus" value="<%= order.paymentStatus %>">
             <form action="/admin/editorder" method="post">
             <div class="content-header">
                 <div>
@@ -174,7 +173,9 @@
                                     <label for="paymentStatus">Payment status</label>
                                     <select  id="paymentStatus" name="paymentStatus" class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
                                         <!-- <option>Change status</option> -->
+                                        <option value="razorpay-success">Razor pay</option>
                                         <option value="pending">Pending</option>
+                                        <option value="walletPayment">Wallet Payment</option>
                                         <option value="awaiting">Awaiting payment</option>
                                         <option value="recieved">Payment recieved</option>
                                         <option value="refund">Refund complete</option>

@@ -108,4 +108,5 @@ route.get('/auth/google', googleController.authorizationURL);
 route.get('/auth/google/callback', googleController.callbackGoogle);
 route.get('/api/sessions/oauth/google', googleController.oauthGoogle);
 
+
 module.exports = route;

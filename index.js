@@ -31,6 +31,7 @@ app.use("/imgs", express.static(path.resolve(__dirname, "assets/imgs")));
 app.use("/js", express.static(path.resolve(__dirname, "assets/js")));
 app.use("/fonts", express.static(path.resolve(__dirname, "assets/fonts")));
 
+
 connectDB();
 
 app.listen(Port, () => {

@@ -135,6 +135,9 @@
                                             <% if (order[index].orderStatus !== 'canceled' && order[index].orderStatus !== 'delivered' && order[index].orderStatus !== 'returned') { %>
                                                 <button type="button" onclick="cancelorder('<%= order[index]._id %>','<%= index %>')" id="cancel<%= index %>" class="" style="background-color: #dc3545; color: #fff; font-size: 14px; border: none; padding: 8px 16px; border-radius: 4px;">Cancel order</button>
                                             <% } %>
+                                            <% if (order[index].orderStatus === 'delivered') { %>
+                                                <button type="button" onclick="returnOrder('<%= order[index]._id %>','<%= index %>')" id="returnBtn<%= index %>" class="" style="background-color: #ffc107; color: #000; font-size: 14px; border: none; padding: 8px 16px; border-radius: 4px;">Return order</button>
+                                            <% } %>
                                             
 
                                             <button type="button" class="place-order" data-bs-toggle="modal" data-bs-target="#orderModal<%= index %>">View Details</button>
@@ -242,6 +245,9 @@
                                                     <% } %>
                                                     <% if (order[index].orderStatus !== 'canceled' && order[index].orderStatus !== 'delivered' && order[index].orderStatus !== 'returned') { %>
                                                         <button type="button" onclick="cancelorder('<%= order[index]._id %>','<%= index %>')" id="cancel<%= index %>" class="btn btn-danger ">Cancel order</button>
+                                                    <% } %>
+                                                    <% if (order[index].orderStatus === 'delivered') { %>
+                                                        <button type="button" onclick="returnOrder('<%= order[index]._id %>','<%= index %>')" id="returnBtn<%= index %>" class="btn btn-primary">Return order</button>
                                                     <% } %>
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                 </div>
